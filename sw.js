@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vestia-pwa-v3';
+const CACHE_NAME = 'vestia-pwa-v4';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -27,7 +27,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
-  if (url.hostname.includes('googleapis.com') || url.hostname.includes('firebaseio.com') || url.hostname.includes('gstatic.com')) {
+  if (url.hostname.includes('googleapis.com') || url.hostname.includes('firebaseio.com') || url.hostname.includes('gstatic.com') || url.hostname.includes('firebaseapp.com')) {
     return;
   }
   event.respondWith(

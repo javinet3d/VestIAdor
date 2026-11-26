@@ -42,7 +42,7 @@
       background: rgba(255,255,255,0.92);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -52,19 +52,38 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-weight: 800;
-      font-size: 1.2rem;
-      letter-spacing: -0.02em;
+      cursor: pointer;
+      user-select: none;
     }
     .brand-badge {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 10px;
       background: var(--primary);
       display: grid;
       place-items: center;
-      color: #fff;
-      font-size: 1.1rem;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .brand-badge img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .brand-text-wrap {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 600;
     }
     .header-actions {
       display: flex;
@@ -93,6 +112,32 @@
     .sync-dot.offline { background: var(--accent); }
     .sync-dot.pending { background: #3b82f6; animation: pulse 1.2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 9px 3px 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      max-width: 132px;
+    }
+    .user-chip img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .user-chip span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     .icon-btn {
       border: 1px solid var(--border);
@@ -182,12 +227,18 @@
     .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
     .btn-accent { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
     .btn-danger { background: #fee2e2; color: #b91c1c; }
+    .btn-google {
+      background: #ffffff;
+      color: #1f2937;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
     .btn-sm { padding: 7px 11px; font-size: 0.8rem; border-radius: 9px; }
     .btn-block { width: 100%; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
-    input[type="text"], input[type="password"], select {
+    input[type="text"], input[type="password"], textarea, select {
       width: 100%;
       padding: 10px 12px;
       border-radius: 11px;
@@ -195,8 +246,27 @@
       background: var(--surface);
       color: var(--text);
       font-size: 0.92rem;
+      font-family: inherit;
     }
-    input:focus, select:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+    input:focus, textarea:focus, select:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+
+    /* Auth Banner */
+    .auth-banner {
+      background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+      border: 1px solid #c7d2fe;
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .auth-banner-info {
+      font-size: 0.8rem;
+      color: #312e81;
+      line-height: 1.35;
+    }
 
     /* Category Filter Chips */
     .chips {
@@ -435,6 +505,22 @@
       padding: 20px;
     }
 
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--surface-2);
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+    .profile-card img {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
     .toast {
       position: fixed;
       bottom: 82px;
@@ -460,14 +546,23 @@
 <body>
 
 <header>
-  <div class="brand">
-    <div class="brand-badge">🧥</div>
-    <div>VestIA</div>
+  <div class="brand" id="brandHelpTrigger" title="Pulsa para ver descripción e instrucciones de VestIA">
+    <div class="brand-badge">
+      <img src="./favicon.svg" alt="VestIA" />
+    </div>
+    <div class="brand-text-wrap">
+      <span class="brand-title">VestIA</span>
+      <span class="brand-sub">Armario Inteligente</span>
+    </div>
   </div>
   <div class="header-actions">
     <button id="syncStatusBtn" class="sync-pill" title="Estado de sincronización">
       <span id="syncDot" class="sync-dot"></span>
       <span id="syncLabel">Local</span>
+    </button>
+    <button id="userAccountBtn" class="user-chip" title="Cuenta de Google y perfil">
+      <img id="headerUserAvatar" src="./icon-192.png" alt="Usuario" />
+      <span id="headerUserName">Entrar</span>
     </button>
     <button id="installBtn" class="icon-btn hidden" title="Instalar app en Chrome">📲</button>
     <button id="openSettingsBtn" class="icon-btn" title="Configuración IA y Firebase">⚙️</button>
@@ -477,6 +572,16 @@
 <main>
   <!-- VIEW 1: ARMARIO (INVENTARIO) -->
   <section id="view-wardrobe" class="view active">
+    <div id="guestAuthBanner" class="auth-banner">
+      <div class="auth-banner-info">
+        <b>Modo local activo.</b> Inicia sesión con tu cuenta de Google para asociar este armario a tu perfil y sincronizarlo entre dispositivos.
+      </div>
+      <button class="btn btn-google btn-sm" onclick="handleGoogleSignIn()">
+        <svg width="15" height="15" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Google
+      </button>
+    </div>
+
     <div class="chips" id="categoryChips">
       <button class="chip active" data-cat="all">Todo (<span id="count-all">0</span>)</button>
       <button class="chip" data-cat="superior">👕 Parte Superior</button>
@@ -638,11 +743,82 @@
   </button>
 </nav>
 
-<!-- MODAL: SETTINGS (GEMINI & FIREBASE) -->
+<!-- MODAL: HELP & INSTRUCTIONS (OPENED BY TAPPING APP ICON/TITLE) -->
+<div id="helpModal" class="modal-backdrop">
+  <div class="modal-sheet">
+    <div class="card-title">
+      <span style="display:flex;align-items:center;gap:8px;">
+        <img src="./favicon.svg" alt="VestIA" style="width:26px;height:26px;border-radius:6px;" />
+        VestIA — Armario Inteligente
+      </span>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('helpModal')">Cerrar</button>
+    </div>
+    <p style="font-size:0.86rem;color:var(--text);line-height:1.45;margin-top:0;">
+      Gestiona el inventario visual de tu ropa, elimina automáticamente el fondo de tus fotos y crea combinaciones inteligentes incluso sin conexión a internet.
+    </p>
+    <div style="background:var(--surface-2);border-radius:12px;padding:12px;font-size:0.82rem;line-height:1.5;">
+      <div style="font-weight:700;margin-bottom:6px;color:var(--primary);">📋 Instrucciones rápidas:</div>
+      <ol style="margin:0;padding-left:18px;">
+        <li><b>Cuenta Google:</b> Pulsa tu perfil arriba a la derecha (o configura tu proyecto Firebase en <b>⚙️</b>) para iniciar sesión con Google y aislar tus prendas en tu propio armario personal.</li>
+        <li><b>Añadir prendas:</b> En la pestaña <b>Añadir</b>, haz una foto o súbela de galería. El fondo pasará a blanco puro y Gemini IA detectará categoría, color y antigüedad.</li>
+        <li><b>Emparejar y Combinar:</b> Usa el botón <b>🔗</b> en cada prenda o entra en <b>Combinar</b>, elige tu prenda base y desliza las categorías para descubrir los mejores matches.</li>
+        <li><b>Modo Offline:</b> Todo funciona sin conexión; los cambios se sincronizan con la nube automáticamente al recuperar internet.</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: GOOGLE ACCOUNT / PROFILE -->
+<div id="accountModal" class="modal-backdrop">
+  <div class="modal-sheet">
+    <div class="card-title">
+      <span>👤 Cuenta de Usuario</span>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal('accountModal')">Cerrar</button>
+    </div>
+
+    <div id="signedInProfileSection" class="hidden">
+      <div class="profile-card">
+        <img id="modalUserAvatar" src="./icon-192.png" alt="Avatar" />
+        <div style="min-width:0;flex:1;">
+          <div id="modalUserName" style="font-weight:800;font-size:0.96rem;">Usuario</div>
+          <div id="modalUserEmail" style="font-size:0.78rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;">correo@gmail.com</div>
+          <div id="modalUserUid" style="font-size:0.7rem;color:var(--primary);margin-top:2px;font-family:monospace;">UID: ...</div>
+        </div>
+      </div>
+
+      <div id="migrateGuestBox" class="card hidden" style="background:#fefce8;border-color:#fde047;padding:12px;">
+        <div style="font-size:0.82rem;font-weight:700;color:#854d0e;margin-bottom:6px;">
+          📦 Tienes prendas guardadas en el modo local sin cuenta
+        </div>
+        <button id="migrateGuestBtn" class="btn btn-accent btn-sm btn-block">Importar prendas locales a mi cuenta Google</button>
+      </div>
+
+      <div class="grid-2">
+        <button id="accountSyncNowBtn" class="btn btn-primary">🔄 Sincronizar Nube</button>
+        <button id="googleSignOutBtn" class="btn btn-danger">Cerrar Sesión</button>
+      </div>
+    </div>
+
+    <div id="signedOutProfileSection">
+      <p style="font-size:0.84rem;color:var(--muted);margin-top:0;line-height:1.45;">
+        Inicia sesión con tu cuenta de Google para que cada usuario tenga su propio armario privado asociado a su identificador único (UID) y sincronizado en Firebase.
+      </p>
+      <button class="btn btn-google btn-block" onclick="handleGoogleSignIn()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continuar con Google
+      </button>
+      <div style="font-size:0.74rem;color:var(--muted);margin-top:10px;text-align:center;">
+        Requiere configurar la Firebase Web Config en <b>⚙️ Ajustes</b> con <i>Google Sign-In</i> habilitado.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SETTINGS (GEMINI & FIREBASE AUTH/DB CONFIG) -->
 <div id="settingsModal" class="modal-backdrop">
   <div class="modal-sheet">
     <div class="card-title">
-      <span>⚙️ Configuración IA y Nube</span>
+      <span>⚙️ Configuración IA y Firebase</span>
       <button class="btn btn-secondary btn-sm" onclick="closeModal('settingsModal')">Cerrar</button>
     </div>
 
@@ -661,19 +837,14 @@
         <option value="gemini-4-hydrogen">Gemini 4 Hydrogen (Nueva generación)</option>
         <option value="gemini-2.5-flash">Gemini 2.5 Flash (Clásico estable)</option>
       </select>
-      <div style="font-size:0.74rem;color:var(--muted);margin-top:4px;">
-        Si el modelo seleccionado tarda más de <b>5 segundos</b> o falla, la app realizará hasta <b>5 reintentos automáticos</b> rotando entre los demás modelos disponibles.
-      </div>
     </div>
 
     <div style="margin-bottom:12px;">
-      <label for="firebaseUrlInput">Firebase Realtime Database URL</label>
-      <input type="text" id="firebaseUrlInput" placeholder="https://tu-proyecto-default-rtdb.europe-west1.firebasedatabase.app" />
-    </div>
-
-    <div style="margin-bottom:14px;">
-      <label for="closetIdInput">ID de Armario / Usuario (para sincronizar dispositivos)</label>
-      <input type="text" id="closetIdInput" placeholder="armario-javi" />
+      <label for="firebaseConfigInput">Configuración Web de Firebase (JSON o objeto firebaseConfig)</label>
+      <textarea id="firebaseConfigInput" rows="5" placeholder='{"apiKey":"AIza...","authDomain":"tu-app.firebaseapp.com","databaseURL":"https://tu-app-default-rtdb.europe-west1.firebasedatabase.app","projectId":"tu-app"}'></textarea>
+      <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">
+        Pega el objeto <code>firebaseConfig</code> de tu proyecto (Configuración del proyecto → Tus apps → Web). Habilita <b>Authentication → Google</b> y <b>Realtime Database</b>.
+      </div>
     </div>
 
     <div class="grid-2" style="margin-bottom:12px;">
@@ -708,6 +879,10 @@
 
 <div id="toast" class="toast"></div>
 
+<!-- Firebase Compat SDKs (loaded dynamically when online; offline mode works 100% without them) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
 <script>
 /* ==========================================================================
    1. SERVICE WORKER & PWA INSTALL PROMPT
@@ -734,9 +909,9 @@ installBtn.addEventListener('click', async () => {
 });
 
 /* ==========================================================================
-   2. INDEXEDDB OFFLINE-FIRST STORAGE + SYNC QUEUE
+   2. INDEXEDDB OFFLINE-FIRST STORAGE SCOPED PER GOOGLE USER (UID)
    ========================================================================== */
-const DB_NAME = 'VestIA_DB';
+const DB_NAME = 'VestIA_MultiUser_DB';
 const DB_VERSION = 1;
 let db = null;
 
@@ -746,10 +921,10 @@ function openDB() {
     req.onupgradeneeded = (e) => {
       const database = e.target.result;
       if (!database.objectStoreNames.contains('garments')) {
-        database.createObjectStore('garments', { keyPath: 'id' });
+        database.createObjectStore('garments', { keyPath: 'storageKey' });
       }
       if (!database.objectStoreNames.contains('outfits')) {
-        database.createObjectStore('outfits', { keyPath: 'id' });
+        database.createObjectStore('outfits', { keyPath: 'storageKey' });
       }
       if (!database.objectStoreNames.contains('syncQueue')) {
         database.createObjectStore('syncQueue', { keyPath: 'queueId', autoIncrement: true });
@@ -788,7 +963,7 @@ function idbDelete(storeName, key) {
 }
 
 /* ==========================================================================
-   3. APP STATE & SETTINGS
+   3. APP STATE, GOOGLE USER SESSION & SETTINGS
    ========================================================================== */
 const CATEGORIES = [
   { key: 'superior', label: 'Parte Superior', icon: '👕' },
@@ -807,6 +982,7 @@ const AVAILABLE_GEMINI_MODELS = [
 ];
 
 const state = {
+  user: JSON.parse(localStorage.getItem('vestia_cached_user') || 'null'), // { uid, displayName, email, photoURL }
   garments: [],
   outfits: [],
   filterCat: 'all',
@@ -818,12 +994,48 @@ const state = {
   showingOriginal: false
 };
 
+function getCurrentOwnerId() {
+  return state.user && state.user.uid ? state.user.uid : 'guest_local';
+}
+
+function makeStorageKey(ownerId, itemId) {
+  return `${ownerId}::${itemId}`;
+}
+
+function parseFirebaseConfigInput(raw) {
+  if (!raw || !raw.trim()) return null;
+  let cleaned = raw.trim();
+  // Allow pasting JS snippet like: const firebaseConfig = { apiKey: "...", ... };
+  const braceStart = cleaned.indexOf('{');
+  const braceEnd = cleaned.lastIndexOf('}');
+  if (braceStart !== -1 && braceEnd !== -1) {
+    cleaned = cleaned.slice(braceStart, braceEnd + 1);
+  }
+  try {
+    return JSON.parse(cleaned);
+  } catch (e) {
+    try {
+      // Quote unquoted keys safely for standard Firebase snippet
+      const jsonified = cleaned
+        .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?\s*:/g, '"$2":')
+        .replace(/'/g, '"')
+        .replace(/,\s*}/g, '}');
+      return JSON.parse(jsonified);
+    } catch (e2) {
+      return null;
+    }
+  }
+}
+
 function getSettings() {
+  const rawFb = localStorage.getItem('vestia_firebase_config') || '';
+  const fbConfig = parseFirebaseConfigInput(rawFb);
   return {
     geminiKey: localStorage.getItem('vestia_gemini_key') || '',
     geminiModel: localStorage.getItem('vestia_gemini_model') || 'gemini-3.1-flash-lite',
-    firebaseUrl: (localStorage.getItem('vestia_firebase_url') || '').replace(/\/+$/, ''),
-    closetId: (localStorage.getItem('vestia_closet_id') || 'mi-armario').trim().replace(/[^a-zA-Z0-9_-]/g, '_')
+    firebaseConfigRaw: rawFb,
+    firebaseConfig: fbConfig,
+    firebaseUrl: fbConfig && fbConfig.databaseURL ? fbConfig.databaseURL.replace(/\/+$/, '') : ''
   };
 }
 
@@ -836,10 +1048,178 @@ function showToast(msg) {
 }
 
 /* ==========================================================================
-   4. FIREBASE REALTIME DATABASE EFFICIENT SYNC (DELTA QUEUE + ONLINE LISTENER)
+   4. FIREBASE AUTHENTICATION (GOOGLE SIGN-IN)
    ========================================================================== */
+let firebaseAuthInstance = null;
+
+function initFirebaseAuth() {
+  const { firebaseConfig } = getSettings();
+  if (!firebaseConfig || !firebaseConfig.apiKey || typeof firebase === 'undefined') {
+    updateAccountUI();
+    return;
+  }
+
+  try {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    firebaseAuthInstance = firebase.auth();
+    firebaseAuthInstance.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+
+    firebaseAuthInstance.onAuthStateChanged(async (user) => {
+      if (user) {
+        state.user = {
+          uid: user.uid,
+          displayName: user.displayName || 'Usuario Google',
+          email: user.email || '',
+          photoURL: user.photoURL || './icon-192.png'
+        };
+        localStorage.setItem('vestia_cached_user', JSON.stringify(state.user));
+      } else {
+        state.user = null;
+        localStorage.removeItem('vestia_cached_user');
+      }
+      updateAccountUI();
+      await reloadLocalState();
+      renderWardrobe();
+      updateSyncIndicator();
+      if (state.user && navigator.onLine) {
+        await pullFromFirebase();
+      }
+    });
+  } catch (err) {
+    console.warn('Firebase init error:', err);
+    updateAccountUI();
+  }
+}
+
+async function handleGoogleSignIn() {
+  const { firebaseConfig } = getSettings();
+  if (!firebaseConfig || !firebaseConfig.apiKey) {
+    closeModal('accountModal');
+    openModal('settingsModal');
+    showToast('Pega primero tu configuración Web de Firebase');
+    return;
+  }
+  if (!navigator.onLine) {
+    showToast('Necesitas conexión a internet para iniciar sesión con Google');
+    return;
+  }
+  if (typeof firebase === 'undefined') {
+    showToast('Recarga la página con conexión para cargar el SDK de Google');
+    return;
+  }
+  if (!firebaseAuthInstance) {
+    initFirebaseAuth();
+  }
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
+    await firebaseAuthInstance.signInWithPopup(provider);
+    closeModal('accountModal');
+    showToast(`Bienvenido, ${state.user?.displayName || 'Usuario'}`);
+  } catch (err) {
+    showToast(`Error al iniciar sesión: ${err.message || err.code}`);
+  }
+}
+
+async function handleGoogleSignOut() {
+  if (firebaseAuthInstance) {
+    try { await firebaseAuthInstance.signOut(); } catch (e) {}
+  }
+  state.user = null;
+  localStorage.removeItem('vestia_cached_user');
+  updateAccountUI();
+  await reloadLocalState();
+  renderWardrobe();
+  updateSyncIndicator();
+  closeModal('accountModal');
+  showToast('Sesión cerrada');
+}
+
+function updateAccountUI() {
+  const avatarEl = document.getElementById('headerUserAvatar');
+  const nameEl = document.getElementById('headerUserName');
+  const guestBanner = document.getElementById('guestAuthBanner');
+  const signedInSec = document.getElementById('signedInProfileSection');
+  const signedOutSec = document.getElementById('signedOutProfileSection');
+
+  if (state.user) {
+    avatarEl.src = state.user.photoURL || './icon-192.png';
+    nameEl.textContent = (state.user.displayName || 'Cuenta').split(' ')[0];
+    guestBanner.classList.add('hidden');
+    signedInSec.classList.remove('hidden');
+    signedOutSec.classList.add('hidden');
+
+    document.getElementById('modalUserAvatar').src = state.user.photoURL || './icon-192.png';
+    document.getElementById('modalUserName').textContent = state.user.displayName || 'Usuario Google';
+    document.getElementById('modalUserEmail').textContent = state.user.email || '';
+    document.getElementById('modalUserUid').textContent = `Armario ID: ${state.user.uid}`;
+    checkGuestItemsForMigration();
+  } else {
+    avatarEl.src = './icon-192.png';
+    nameEl.textContent = 'Entrar';
+    guestBanner.classList.remove('hidden');
+    signedInSec.classList.add('hidden');
+    signedOutSec.classList.remove('hidden');
+  }
+}
+
+async function checkGuestItemsForMigration() {
+  if (!db || !state.user) return;
+  const allGarments = await idbGetAll('garments');
+  const guestGarments = allGarments.filter(g => g.ownerId === 'guest_local');
+  const box = document.getElementById('migrateGuestBox');
+  if (guestGarments.length > 0) {
+    box.classList.remove('hidden');
+  } else {
+    box.classList.add('hidden');
+  }
+}
+
+document.getElementById('migrateGuestBtn').addEventListener('click', async () => {
+  if (!state.user) return;
+  const uid = state.user.uid;
+  const allGarments = await idbGetAll('garments');
+  const allOutfits = await idbGetAll('outfits');
+
+  for (const g of allGarments.filter(x => x.ownerId === 'guest_local')) {
+    await idbDelete('garments', g.storageKey);
+    const migrated = { ...g, ownerId: uid, storageKey: makeStorageKey(uid, g.id), updatedAt: Date.now() };
+    await idbPut('garments', migrated);
+    await enqueueSync('garments', 'put', migrated.id, migrated);
+  }
+  for (const o of allOutfits.filter(x => x.ownerId === 'guest_local')) {
+    await idbDelete('outfits', o.storageKey);
+    const migrated = { ...o, ownerId: uid, storageKey: makeStorageKey(uid, o.id), updatedAt: Date.now() };
+    await idbPut('outfits', migrated);
+    await enqueueSync('outfits', 'put', migrated.id, migrated);
+  }
+
+  await reloadLocalState();
+  renderWardrobe();
+  checkGuestItemsForMigration();
+  showToast('Prendas locales transferidas a tu cuenta Google');
+});
+
+/* ==========================================================================
+   5. FIREBASE REALTIME DATABASE EFFICIENT SYNC (USER-SCOPED + AUTH TOKEN)
+   ========================================================================== */
+async function getFirebaseIdToken() {
+  if (firebaseAuthInstance && firebaseAuthInstance.currentUser) {
+    try {
+      return await firebaseAuthInstance.currentUser.getIdToken();
+    } catch (e) {
+      return null;
+    }
+  }
+  return null;
+}
+
 async function enqueueSync(entity, action, id, payload = null) {
+  const ownerId = getCurrentOwnerId();
   await idbPut('syncQueue', {
+    ownerId,
     entity,
     action,
     id,
@@ -847,7 +1227,7 @@ async function enqueueSync(entity, action, id, payload = null) {
     ts: Date.now()
   });
   updateSyncIndicator();
-  if (navigator.onLine) {
+  if (navigator.onLine && state.user) {
     processSyncQueue();
   }
 }
@@ -856,13 +1236,15 @@ async function updateSyncIndicator() {
   const dot = document.getElementById('syncDot');
   const label = document.getElementById('syncLabel');
   const { firebaseUrl } = getSettings();
-  const queue = db ? await idbGetAll('syncQueue') : [];
+  const ownerId = getCurrentOwnerId();
+  const allQueue = db ? await idbGetAll('syncQueue') : [];
+  const queue = allQueue.filter(q => q.ownerId === ownerId);
 
   dot.className = 'sync-dot';
   if (!navigator.onLine) {
     dot.classList.add('offline');
     label.textContent = queue.length ? `Offline (${queue.length})` : 'Offline';
-  } else if (!firebaseUrl) {
+  } else if (!state.user || !firebaseUrl) {
     label.textContent = 'Local';
   } else if (queue.length > 0) {
     dot.classList.add('pending');
@@ -873,19 +1255,24 @@ async function updateSyncIndicator() {
 }
 
 async function processSyncQueue() {
-  const { firebaseUrl, closetId } = getSettings();
-  if (!firebaseUrl || !navigator.onLine) {
+  const { firebaseUrl } = getSettings();
+  if (!firebaseUrl || !navigator.onLine || !state.user) {
     updateSyncIndicator();
     return;
   }
-  const queue = await idbGetAll('syncQueue');
-  if (!queue.length) {
+  const uid = state.user.uid;
+  const allQueue = await idbGetAll('syncQueue');
+  const userQueue = allQueue.filter(q => q.ownerId === uid);
+  if (!userQueue.length) {
     updateSyncIndicator();
     return;
   }
 
-  for (const item of queue) {
-    const url = `${firebaseUrl}/vestia/${closetId}/${item.entity}/${item.id}.json`;
+  const token = await getFirebaseIdToken();
+  const authQuery = token ? `?auth=${encodeURIComponent(token)}` : '';
+
+  for (const item of userQueue) {
+    const url = `${firebaseUrl}/vestia/${uid}/${item.entity}/${item.id}.json${authQuery}`;
     try {
       const res = await fetch(url, {
         method: item.action === 'delete' ? 'DELETE' : 'PUT',
@@ -903,11 +1290,14 @@ async function processSyncQueue() {
 }
 
 async function pullFromFirebase() {
-  const { firebaseUrl, closetId } = getSettings();
-  if (!firebaseUrl || !navigator.onLine) return;
+  const { firebaseUrl } = getSettings();
+  if (!firebaseUrl || !navigator.onLine || !state.user) return;
+  const uid = state.user.uid;
   try {
     await processSyncQueue();
-    const res = await fetch(`${firebaseUrl}/vestia/${closetId}.json`);
+    const token = await getFirebaseIdToken();
+    const authQuery = token ? `?auth=${encodeURIComponent(token)}` : '';
+    const res = await fetch(`${firebaseUrl}/vestia/${uid}.json${authQuery}`);
     if (!res.ok) return;
     const data = await res.json();
     if (!data) return;
@@ -918,6 +1308,8 @@ async function pullFromFirebase() {
       for (const rg of remoteGarments) {
         const lg = localMap.get(rg.id);
         if (!lg || (rg.updatedAt || 0) > (lg.updatedAt || 0)) {
+          rg.ownerId = uid;
+          rg.storageKey = makeStorageKey(uid, rg.id);
           await idbPut('garments', rg);
         }
       }
@@ -928,23 +1320,26 @@ async function pullFromFirebase() {
       for (const ro of remoteOutfits) {
         const lo = localMap.get(ro.id);
         if (!lo || (ro.updatedAt || 0) > (lo.updatedAt || 0)) {
+          ro.ownerId = uid;
+          ro.storageKey = makeStorageKey(uid, ro.id);
           await idbPut('outfits', ro);
         }
       }
     }
     await reloadLocalState();
-    showToast('Armario sincronizado con Firebase');
+    renderWardrobe();
+    showToast('Armario sincronizado con tu cuenta');
   } catch (e) {}
 }
 
 window.addEventListener('online', () => {
   updateSyncIndicator();
-  processSyncQueue();
+  if (state.user) processSyncQueue();
 });
 window.addEventListener('offline', updateSyncIndicator);
 
 /* ==========================================================================
-   5. IMAGE PROCESSING: AUTO BACKGROUND REMOVAL -> PURE WHITE & COMPRESSION
+   6. IMAGE PROCESSING: AUTO BACKGROUND REMOVAL -> PURE WHITE & COMPRESSION
    ========================================================================== */
 function loadImageFromFile(file) {
   return new Promise((resolve, reject) => {
@@ -1065,7 +1460,7 @@ function extractDominantColor(data) {
 }
 
 /* ==========================================================================
-   6. GEMINI AI INTEGRATION WITH 5s TIMEOUT + 5 MODEL FALLBACK RETRIES
+   7. GEMINI AI INTEGRATION WITH 5s TIMEOUT + 5 MODEL FALLBACK RETRIES
    ========================================================================== */
 function setAiProgress(visible, text = '') {
   const banner = document.getElementById('aiProgressBanner');
@@ -1082,11 +1477,7 @@ async function fetchWithTimeout(url, options, timeoutMs = 5000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const response = await fetch(url, {
-      ...options,
-      signal: controller.signal
-    });
-    return response;
+    return await fetch(url, { ...options, signal: controller.signal });
   } finally {
     clearTimeout(timer);
   }
@@ -1106,7 +1497,6 @@ async function analyzeGarmentWithGemini(base64DataUrl) {
   "age": "Antigüedad estimada según aspecto y desgaste, una de: Nueva (< 6 meses) | Reciente (6-12 meses) | 1-2 años | 3-5 años | Vintage (+5 años)"
 }`;
 
-  // Primary selected model + up to 5 fallback retries across the remaining available models (total up to 6 attempts: 1 initial + 5 retries)
   const fallbackPool = AVAILABLE_GEMINI_MODELS.filter(m => m !== geminiModel);
   const attemptQueue = [geminiModel, ...fallbackPool.slice(0, 5)];
 
@@ -1141,7 +1531,7 @@ async function analyzeGarmentWithGemini(base64DataUrl) {
           headers: { 'Content-Type': 'application/json' },
           body: requestBody
         },
-        5000 // Strict 5-second timeout per attempt
+        5000
       );
 
       if (!res.ok) continue;
@@ -1150,9 +1540,7 @@ async function analyzeGarmentWithGemini(base64DataUrl) {
       const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
       setAiProgress(false);
       return { data: parsed, usedModel: model };
-    } catch (e) {
-      // Timeout (AbortError) or network/API error -> proceed to next retry model
-    }
+    } catch (e) {}
   }
 
   setAiProgress(false);
@@ -1160,7 +1548,7 @@ async function analyzeGarmentWithGemini(base64DataUrl) {
 }
 
 /* ==========================================================================
-   7. NAVIGATION & WARDROBE RENDERING
+   8. NAVIGATION & WARDROBE RENDERING
    ========================================================================== */
 function switchTab(tabName) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -1235,7 +1623,7 @@ function renderWardrobe() {
 }
 
 /* ==========================================================================
-   8. ADD / EDIT GARMENT FORM HANDLERS
+   9. ADD / EDIT GARMENT FORM HANDLERS
    ========================================================================== */
 function applyAiResultToForm(result) {
   if (!result || !result.data) return;
@@ -1349,9 +1737,13 @@ document.getElementById('saveGarmentBtn').addEventListener('click', async () => 
     return;
   }
 
+  const ownerId = getCurrentOwnerId();
   const existing = editId ? state.garments.find(g => g.id === editId) : null;
+  const itemId = editId || 'g_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
   const garment = {
-    id: editId || 'g_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    id: itemId,
+    ownerId,
+    storageKey: makeStorageKey(ownerId, itemId),
     name: name || `${CATEGORIES.find(c => c.key === category).label} ${colorName}`,
     category,
     colorName,
@@ -1367,7 +1759,7 @@ document.getElementById('saveGarmentBtn').addEventListener('click', async () => 
   await enqueueSync('garments', 'put', garment.id, garment);
 
   resetGarmentForm();
-  showToast('Prenda guardada en el armario');
+  showToast('Prenda guardada en tu armario');
   switchTab('wardrobe');
 });
 
@@ -1404,7 +1796,8 @@ function editGarment(id) {
 }
 
 async function deleteGarment(id) {
-  await idbDelete('garments', id);
+  const ownerId = getCurrentOwnerId();
+  await idbDelete('garments', makeStorageKey(ownerId, id));
   for (const g of state.garments) {
     if (g.matches && g.matches.includes(id)) {
       g.matches = g.matches.filter(m => m !== id);
@@ -1420,7 +1813,7 @@ async function deleteGarment(id) {
 }
 
 /* ==========================================================================
-   9. MANUAL MATCHING BIDIRECTIONAL SYSTEM
+   10. MANUAL MATCHING BIDIRECTIONAL SYSTEM
    ========================================================================== */
 async function toggleBidirectionalMatch(idA, idB) {
   const gA = state.garments.find(g => g.id === idA);
@@ -1485,7 +1878,7 @@ async function handleMatchCheckbox(idA, idB) {
 }
 
 /* ==========================================================================
-   10. OUTFIT COMBINATOR (SLIDE CAROUSELS + SMART RANKING BY MATCH & COLOR)
+   11. OUTFIT COMBINATOR (SLIDE CAROUSELS + SMART RANKING BY MATCH & COLOR)
    ========================================================================== */
 function hexToHsl(hex) {
   let r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -1691,8 +2084,12 @@ document.getElementById('saveOutfitBtn').addEventListener('click', async () => {
     }
   }
 
+  const ownerId = getCurrentOwnerId();
+  const outfitId = 'o_' + Date.now();
   const outfit = {
-    id: 'o_' + Date.now(),
+    id: outfitId,
+    ownerId,
+    storageKey: makeStorageKey(ownerId, outfitId),
     items: selectedIds,
     updatedAt: Date.now()
   };
@@ -1706,7 +2103,7 @@ document.getElementById('saveOutfitBtn').addEventListener('click', async () => {
 });
 
 /* ==========================================================================
-   11. SAVED OUTFITS VIEW
+   12. SAVED OUTFITS VIEW
    ========================================================================== */
 function renderOutfits() {
   const listEl = document.getElementById('outfitsList');
@@ -1748,7 +2145,8 @@ function renderOutfits() {
 }
 
 async function deleteOutfit(id) {
-  await idbDelete('outfits', id);
+  const ownerId = getCurrentOwnerId();
+  await idbDelete('outfits', makeStorageKey(ownerId, id));
   await reloadLocalState();
   await enqueueSync('outfits', 'delete', id);
   renderOutfits();
@@ -1756,45 +2154,73 @@ async function deleteOutfit(id) {
 }
 
 /* ==========================================================================
-   12. MODALS, SETTINGS & BACKUP
+   13. MODALS, SETTINGS & BACKUP
    ========================================================================== */
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.getElementById('brandHelpTrigger').addEventListener('click', () => {
+  openModal('helpModal');
+});
+
+document.getElementById('userAccountBtn').addEventListener('click', () => {
+  updateAccountUI();
+  openModal('accountModal');
+});
+
+document.getElementById('googleSignOutBtn').addEventListener('click', handleGoogleSignOut);
+document.getElementById('accountSyncNowBtn').addEventListener('click', async () => {
+  await pullFromFirebase();
+  closeModal('accountModal');
+});
 
 document.getElementById('openSettingsBtn').addEventListener('click', () => {
   const s = getSettings();
   document.getElementById('geminiKeyInput').value = s.geminiKey;
   document.getElementById('geminiModelSelect').value = s.geminiModel;
-  document.getElementById('firebaseUrlInput').value = s.firebaseUrl;
-  document.getElementById('closetIdInput').value = s.closetId;
+  document.getElementById('firebaseConfigInput').value = s.firebaseConfigRaw;
   openModal('settingsModal');
 });
 
 document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
   localStorage.setItem('vestia_gemini_key', document.getElementById('geminiKeyInput').value.trim());
   localStorage.setItem('vestia_gemini_model', document.getElementById('geminiModelSelect').value);
-  localStorage.setItem('vestia_firebase_url', document.getElementById('firebaseUrlInput').value.trim());
-  localStorage.setItem('vestia_closet_id', document.getElementById('closetIdInput').value.trim() || 'mi-armario');
+  localStorage.setItem('vestia_firebase_config', document.getElementById('firebaseConfigInput').value.trim());
   closeModal('settingsModal');
+  initFirebaseAuth();
   updateSyncIndicator();
   showToast('Configuración guardada');
-  await pullFromFirebase();
+  if (state.user) {
+    await pullFromFirebase();
+  }
 });
 
 document.getElementById('forceSyncBtn').addEventListener('click', async () => {
+  if (!state.user) {
+    closeModal('settingsModal');
+    openModal('accountModal');
+    showToast('Inicia sesión con Google para sincronizar');
+    return;
+  }
   await pullFromFirebase();
 });
 
 document.getElementById('syncStatusBtn').addEventListener('click', async () => {
-  if (navigator.onLine && getSettings().firebaseUrl) {
+  if (navigator.onLine && state.user && getSettings().firebaseUrl) {
     await pullFromFirebase();
+  } else if (!state.user) {
+    openModal('accountModal');
   } else {
     openModal('settingsModal');
   }
 });
 
 document.getElementById('exportJsonBtn').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify({ garments: state.garments, outfits: state.outfits }, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify({
+    owner: state.user ? { uid: state.user.uid, email: state.user.email } : 'guest_local',
+    garments: state.garments,
+    outfits: state.outfits
+  }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `vestia-backup-${new Date().toISOString().slice(0,10)}.json`;
@@ -1806,22 +2232,26 @@ document.getElementById('importJsonInput').addEventListener('change', async (e) 
   if (!file) return;
   const text = await file.text();
   const parsed = JSON.parse(text);
+  const ownerId = getCurrentOwnerId();
+
   if (Array.isArray(parsed.garments)) {
     for (const g of parsed.garments) {
-      await idbPut('garments', g);
-      await enqueueSync('garments', 'put', g.id, g);
+      const item = { ...g, ownerId, storageKey: makeStorageKey(ownerId, g.id), updatedAt: Date.now() };
+      await idbPut('garments', item);
+      await enqueueSync('garments', 'put', item.id, item);
     }
   }
   if (Array.isArray(parsed.outfits)) {
     for (const o of parsed.outfits) {
-      await idbPut('outfits', o);
-      await enqueueSync('outfits', 'put', o.id, o);
+      const item = { ...o, ownerId, storageKey: makeStorageKey(ownerId, o.id), updatedAt: Date.now() };
+      await idbPut('outfits', item);
+      await enqueueSync('outfits', 'put', item.id, item);
     }
   }
   await reloadLocalState();
   renderWardrobe();
   closeModal('settingsModal');
-  showToast('Backup importado correctamente');
+  showToast('Backup importado a tu armario');
 });
 
 function escapeHtml(str) {
@@ -1829,21 +2259,27 @@ function escapeHtml(str) {
 }
 
 async function reloadLocalState() {
-  state.garments = (await idbGetAll('garments')).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-  state.outfits = (await idbGetAll('outfits')).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  const ownerId = getCurrentOwnerId();
+  const allGarments = await idbGetAll('garments');
+  const allOutfits = await idbGetAll('outfits');
+  state.garments = allGarments
+    .filter(g => g.ownerId === ownerId)
+    .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  state.outfits = allOutfits
+    .filter(o => o.ownerId === ownerId)
+    .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 }
 
 /* ==========================================================================
-   13. INITIALIZATION
+   14. INITIALIZATION
    ========================================================================== */
 (async function init() {
   await openDB();
+  updateAccountUI();
   await reloadLocalState();
   renderWardrobe();
   updateSyncIndicator();
-  if (navigator.onLine && getSettings().firebaseUrl) {
-    pullFromFirebase();
-  }
+  initFirebaseAuth();
 })();
 </script>
 </body>
