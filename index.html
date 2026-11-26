@@ -759,7 +759,7 @@
     <div style="background:var(--surface-2);border-radius:12px;padding:12px;font-size:0.82rem;line-height:1.5;">
       <div style="font-weight:700;margin-bottom:6px;color:var(--primary);">📋 Instrucciones rápidas:</div>
       <ol style="margin:0;padding-left:18px;">
-        <li><b>Cuenta Google:</b> Pulsa tu perfil arriba a la derecha (o configura tu proyecto Firebase en <b>⚙️</b>) para iniciar sesión con Google y aislar tus prendas en tu propio armario personal.</li>
+        <li><b>Cuenta Google:</b> Pulsa tu perfil arriba a la derecha para iniciar sesión con Google y aislar tus prendas en tu propio armario personal sincronizado en la nube.</li>
         <li><b>Añadir prendas:</b> En la pestaña <b>Añadir</b>, haz una foto o súbela de galería. El fondo pasará a blanco puro y Gemini IA detectará categoría, color y antigüedad.</li>
         <li><b>Emparejar y Combinar:</b> Usa el botón <b>🔗</b> en cada prenda o entra en <b>Combinar</b>, elige tu prenda base y desliza las categorías para descubrir los mejores matches.</li>
         <li><b>Modo Offline:</b> Todo funciona sin conexión; los cambios se sincronizan con la nube automáticamente al recuperar internet.</li>
@@ -807,9 +807,6 @@
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
         Continuar con Google
       </button>
-      <div style="font-size:0.74rem;color:var(--muted);margin-top:10px;text-align:center;">
-        Requiere configurar la Firebase Web Config en <b>⚙️ Ajustes</b> con <i>Google Sign-In</i> habilitado.
-      </div>
     </div>
   </div>
 </div>
@@ -840,10 +837,10 @@
     </div>
 
     <div style="margin-bottom:12px;">
-      <label for="firebaseConfigInput">Configuración Web de Firebase (JSON o objeto firebaseConfig)</label>
-      <textarea id="firebaseConfigInput" rows="5" placeholder='{"apiKey":"AIza...","authDomain":"tu-app.firebaseapp.com","databaseURL":"https://tu-app-default-rtdb.europe-west1.firebasedatabase.app","projectId":"tu-app"}'></textarea>
+      <label for="firebaseConfigInput">Configuración Web de Firebase (preconfigurada por defecto)</label>
+      <textarea id="firebaseConfigInput" rows="5"></textarea>
       <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">
-        Pega el objeto <code>firebaseConfig</code> de tu proyecto (Configuración del proyecto → Tus apps → Web). Habilita <b>Authentication → Google</b> y <b>Realtime Database</b>.
+        Ya incluye la configuración por defecto del proyecto <code>vestia-87980</code>. Puedes editarla aquí si deseas usar otro proyecto.
       </div>
     </div>
 
@@ -879,7 +876,7 @@
 
 <div id="toast" class="toast"></div>
 
-<!-- Firebase Compat SDKs (loaded dynamically when online; offline mode works 100% without them) -->
+<!-- Firebase Compat SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
@@ -963,8 +960,15 @@ function idbDelete(storeName, key) {
 }
 
 /* ==========================================================================
-   3. APP STATE, GOOGLE USER SESSION & SETTINGS
+   3. APP STATE, GOOGLE USER SESSION & DEFAULT FIREBASE SETTINGS
    ========================================================================== */
+const DEFAULT_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBWkE2mDWKfp5dp5JzqkaiwiwG7xxPOSuA",
+  authDomain: "vestia-87980.firebaseapp.com",
+  databaseURL: "https://vestia-87980-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "vestia-87980"
+};
+
 const CATEGORIES = [
   { key: 'superior', label: 'Parte Superior', icon: '👕' },
   { key: 'cinturon', label: 'Cinturón', icon: '🪢' },
@@ -982,7 +986,7 @@ const AVAILABLE_GEMINI_MODELS = [
 ];
 
 const state = {
-  user: JSON.parse(localStorage.getItem('vestia_cached_user') || 'null'), // { uid, displayName, email, photoURL }
+  user: JSON.parse(localStorage.getItem('vestia_cached_user') || 'null'),
   garments: [],
   outfits: [],
   filterCat: 'all',
@@ -1005,7 +1009,6 @@ function makeStorageKey(ownerId, itemId) {
 function parseFirebaseConfigInput(raw) {
   if (!raw || !raw.trim()) return null;
   let cleaned = raw.trim();
-  // Allow pasting JS snippet like: const firebaseConfig = { apiKey: "...", ... };
   const braceStart = cleaned.indexOf('{');
   const braceEnd = cleaned.lastIndexOf('}');
   if (braceStart !== -1 && braceEnd !== -1) {
@@ -1015,7 +1018,6 @@ function parseFirebaseConfigInput(raw) {
     return JSON.parse(cleaned);
   } catch (e) {
     try {
-      // Quote unquoted keys safely for standard Firebase snippet
       const jsonified = cleaned
         .replace(/(['"])?([a-zA-Z0-9_]+)(['"])?\s*:/g, '"$2":')
         .replace(/'/g, '"')
@@ -1029,11 +1031,11 @@ function parseFirebaseConfigInput(raw) {
 
 function getSettings() {
   const rawFb = localStorage.getItem('vestia_firebase_config') || '';
-  const fbConfig = parseFirebaseConfigInput(rawFb);
+  const fbConfig = parseFirebaseConfigInput(rawFb) || DEFAULT_FIREBASE_CONFIG;
   return {
     geminiKey: localStorage.getItem('vestia_gemini_key') || '',
     geminiModel: localStorage.getItem('vestia_gemini_model') || 'gemini-3.1-flash-lite',
-    firebaseConfigRaw: rawFb,
+    firebaseConfigRaw: rawFb || JSON.stringify(DEFAULT_FIREBASE_CONFIG, null, 2),
     firebaseConfig: fbConfig,
     firebaseUrl: fbConfig && fbConfig.databaseURL ? fbConfig.databaseURL.replace(/\/+$/, '') : ''
   };
