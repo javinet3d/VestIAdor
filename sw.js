@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vestia-pwa-v5';
+const CACHE_NAME = 'vestia-pwa-v8';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

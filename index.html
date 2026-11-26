@@ -90,28 +90,56 @@
       align-items: center;
       gap: 6px;
     }
-    .sync-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: var(--surface-2);
-      color: var(--muted);
+
+    /* Cloud Status Button (Green when online, Grey when offline) */
+    .cloud-btn {
       border: 1px solid var(--border);
+      background: var(--surface);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
       cursor: pointer;
+      position: relative;
+      padding: 0;
+      transition: transform .1s, border-color .2s;
     }
-    .sync-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--success);
+    .cloud-btn:active { transform: scale(0.95); }
+    .cloud-btn svg {
+      width: 21px;
+      height: 21px;
+      transition: color .2s;
     }
-    .sync-dot.offline { background: var(--accent); }
-    .sync-dot.pending { background: #3b82f6; animation: pulse 1.2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+    .cloud-btn.online {
+      color: var(--success);
+      border-color: #a7f3d0;
+      background: #ecfdf5;
+    }
+    .cloud-btn.offline {
+      color: #94a3b8;
+      border-color: var(--border);
+      background: var(--surface-2);
+    }
+    .cloud-btn.pending svg {
+      animation: pulse 1.2s infinite;
+    }
+    .cloud-queue-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.62rem;
+      font-weight: 800;
+      min-width: 15px;
+      height: 15px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      padding: 0 3px;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
     .user-chip {
       display: inline-flex;
@@ -226,6 +254,8 @@
     .btn-primary:hover { background: var(--primary-hover); }
     .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
     .btn-accent { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .btn-studio { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #fff; }
+    .btn-surprise { background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: #fff; box-shadow: 0 3px 10px rgba(139, 92, 246, 0.28); }
     .btn-danger { background: #fee2e2; color: #b91c1c; }
     .btn-google {
       background: #ffffff;
@@ -237,6 +267,7 @@
     .btn-block { width: 100%; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
     input[type="text"], input[type="password"], textarea, select {
       width: 100%;
@@ -249,6 +280,54 @@
       font-family: inherit;
     }
     input:focus, textarea:focus, select:focus { outline: 2px solid var(--primary-soft); border-color: var(--primary); }
+
+    /* Multi-select Style Pills (Casual, Trabajo, Elegante) */
+    .style-pills-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .style-pill-btn {
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 11px;
+      padding: 9px 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all .15s;
+    }
+    .style-pill-btn.selected[data-style="casual"] {
+      background: #ecfdf5;
+      border-color: #10b981;
+      color: #065f46;
+    }
+    .style-pill-btn.selected[data-style="trabajo"] {
+      background: #eff6ff;
+      border-color: #3b82f6;
+      color: #1e40af;
+    }
+    .style-pill-btn.selected[data-style="elegante"] {
+      background: #faf5ff;
+      border-color: #8b5cf6;
+      color: #5b21b6;
+    }
+
+    .style-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      text-transform: capitalize;
+    }
+    .style-tag.casual { background: #d1fae5; color: #065f46; }
+    .style-tag.trabajo { background: #dbeafe; color: #1e40af; }
+    .style-tag.elegante { background: #ede9fe; color: #5b21b6; }
 
     /* Auth Banner */
     .auth-banner {
@@ -268,13 +347,13 @@
       line-height: 1.35;
     }
 
-    /* Category Filter Chips */
+    /* Category & Style Filter Chips */
     .chips {
       display: flex;
       gap: 7px;
       overflow-x: auto;
       padding-bottom: 6px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       scrollbar-width: none;
     }
     .chips::-webkit-scrollbar { display: none; }
@@ -285,7 +364,7 @@
       color: var(--muted);
       padding: 6px 13px;
       border-radius: 999px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
     }
@@ -294,12 +373,18 @@
       color: #fff;
       border-color: var(--primary);
     }
+    .chip.style-chip.active {
+      background: #0f172a;
+      border-color: #0f172a;
+      color: #fff;
+    }
 
     /* Wardrobe Grid */
     .wardrobe-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(154px, 1fr));
       gap: 12px;
+      margin-top: 6px;
     }
     .garment-card {
       background: var(--surface);
@@ -329,7 +414,7 @@
       padding: 10px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 5px;
       flex: 1;
     }
     .garment-name {
@@ -366,6 +451,13 @@
       border-radius: 14px;
       padding: 12px;
       margin-bottom: 14px;
+    }
+    .surprise-box {
+      background: #ffffff;
+      border: 1px solid #ddd6fe;
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 10px;
     }
     .slot-card {
       background: var(--surface);
@@ -454,7 +546,7 @@
     /* Preview Canvas in Add Form */
     .preview-box {
       width: 100%;
-      height: 220px;
+      height: 230px;
       background: #ffffff;
       border: 2px dashed var(--border);
       border-radius: 14px;
@@ -469,6 +561,18 @@
       max-height: 92%;
       object-fit: contain;
     }
+    .preview-mode-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(15, 23, 42, 0.78);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
 
     .ai-status-banner {
       background: var(--primary-soft);
@@ -482,6 +586,20 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--surface-2);
+      padding: 10px 12px;
+      border-radius: 11px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
     }
 
     /* Modal / Drawer */
@@ -521,6 +639,7 @@
       object-fit: cover;
     }
 
+    /* Interactive Toast with Undo Support */
     .toast {
       position: fixed;
       bottom: 82px;
@@ -536,10 +655,29 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity .2s;
-      max-width: 90vw;
-      text-align: center;
+      max-width: 92vw;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.25);
     }
-    .toast.show { opacity: 1; }
+    .toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .toast-undo-btn {
+      background: #fbbf24;
+      color: #0f172a;
+      border: none;
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .toast-undo-btn:active { transform: scale(0.95); }
     .hidden { display: none !important; }
   </style>
 </head>
@@ -556,9 +694,12 @@
     </div>
   </div>
   <div class="header-actions">
-    <button id="syncStatusBtn" class="sync-pill" title="Estado de sincronización">
-      <span id="syncDot" class="sync-dot"></span>
-      <span id="syncLabel">Local</span>
+    <button id="undoHeaderBtn" class="icon-btn hidden" title="Deshacer último cambio">↩️</button>
+    <button id="syncStatusBtn" class="cloud-btn offline" title="Estado de conexión y sincronización">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/>
+      </svg>
+      <span id="cloudQueueBadge" class="cloud-queue-badge hidden">0</span>
     </button>
     <button id="userAccountBtn" class="user-chip" title="Cuenta de Google y perfil">
       <img id="headerUserAvatar" src="./icon-192.png" alt="Usuario" />
@@ -582,6 +723,7 @@
       </button>
     </div>
 
+    <!-- Filtro por tipo de prenda -->
     <div class="chips" id="categoryChips">
       <button class="chip active" data-cat="all">Todo (<span id="count-all">0</span>)</button>
       <button class="chip" data-cat="superior">👕 Parte Superior</button>
@@ -590,11 +732,19 @@
       <button class="chip" data-cat="calzado">👟 Calzado</button>
     </div>
 
+    <!-- Filtro por estilo -->
+    <div class="chips" id="styleFilterChips">
+      <button class="chip style-chip active" data-style="all">✨ Todos los estilos</button>
+      <button class="chip style-chip" data-style="casual">👟 Casual</button>
+      <button class="chip style-chip" data-style="trabajo">💼 Trabajo</button>
+      <button class="chip style-chip" data-style="elegante">🎩 Elegante</button>
+    </div>
+
     <div id="wardrobeEmpty" class="card hidden" style="text-align:center;padding:32px 16px;">
       <div style="font-size:2.4rem;margin-bottom:8px;">👗</div>
-      <div style="font-weight:700;margin-bottom:4px;">Tu armario está vacío</div>
-      <div style="color:var(--muted);font-size:0.86rem;margin-bottom:16px;">Añade tus primeras prendas con foto; quitaremos el fondo automáticamente.</div>
-      <button class="btn btn-primary" onclick="switchTab('add')">+ Añadir primera prenda</button>
+      <div style="font-weight:700;margin-bottom:4px;">No hay prendas que coincidan</div>
+      <div style="color:var(--muted);font-size:0.86rem;margin-bottom:16px;">Añade tus prendas con foto; la IA quitará el fondo y la percha, y clasificará sus estilos.</div>
+      <button class="btn btn-primary" onclick="switchTab('add')">+ Añadir prenda</button>
     </div>
 
     <div id="wardrobeGrid" class="wardrobe-grid"></div>
@@ -612,12 +762,13 @@
 
       <div id="aiProgressBanner" class="ai-status-banner hidden">
         <span>⏳</span>
-        <span id="aiProgressText">Analizando con IA...</span>
+        <span id="aiProgressText">Procesando con IA...</span>
       </div>
 
       <div class="preview-box" id="previewBox">
+        <span id="previewModeTag" class="preview-mode-tag hidden">Estudio IA</span>
         <span id="previewPlaceholder" style="color:var(--muted);font-size:0.88rem;text-align:center;padding:12px;">
-          Haz una foto o sube una imagen.<br/>Se recortará el fondo a blanco puro.
+          Haz una foto o sube una imagen.<br/>La IA quitará la percha y el fondo, dejando la prenda colocada sobre blanco puro como en tienda.
         </span>
         <img id="previewImg" class="hidden" alt="Vista previa prenda" />
       </div>
@@ -633,14 +784,15 @@
         </label>
       </div>
 
-      <div id="bgToolsRow" class="grid-2 hidden" style="margin-bottom:12px;">
-        <div>
-          <label for="bgTolerance">Tolerancia recorte fondo</label>
-          <input type="range" id="bgTolerance" min="10" max="85" value="36" style="width:100%;" />
+      <div id="bgToolsRow" class="hidden" style="margin-bottom:12px;">
+        <div class="grid-3" style="margin-bottom:8px;">
+          <button type="button" id="studioRetouchBtn" class="btn btn-studio btn-sm">🪄 Foto Tienda IA</button>
+          <button type="button" id="cyclePreviewBtn" class="btn btn-secondary btn-sm">👁️ Ver Original</button>
+          <button type="button" id="reanalyzeAiBtn" class="btn btn-accent btn-sm">✨ Datos IA</button>
         </div>
-        <div style="display:flex;align-items:flex-end;gap:6px;">
-          <button type="button" id="toggleOrigBtn" class="btn btn-secondary btn-sm" style="flex:1;">Ver original</button>
-          <button type="button" id="reanalyzeAiBtn" class="btn btn-accent btn-sm" style="flex:1;">✨ Analizar IA</button>
+        <div>
+          <label for="bgTolerance">Ajuste manual recorte local (si no hay IA)</label>
+          <input type="range" id="bgTolerance" min="10" max="85" value="36" style="width:100%;" />
         </div>
       </div>
 
@@ -671,6 +823,16 @@
         </div>
       </div>
 
+      <!-- MULTI-SELECT STYLES -->
+      <div style="margin-bottom:12px;">
+        <label>Estilos (puedes marcar varios)</label>
+        <div class="style-pills-group" id="garmentStylesSelector">
+          <button type="button" class="style-pill-btn selected" data-style="casual">👟 Casual</button>
+          <button type="button" class="style-pill-btn" data-style="trabajo">💼 Trabajo</button>
+          <button type="button" class="style-pill-btn" data-style="elegante">🎩 Elegante</button>
+        </div>
+      </div>
+
       <div class="grid-2" style="margin-bottom:14px;">
         <div>
           <label for="garmentColorName">Color principal</label>
@@ -691,10 +853,7 @@
     <div class="anchor-selector">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
         <span style="font-weight:800;font-size:0.88rem;color:#312e81;">🎯 Prenda Base (Ancla)</span>
-        <div style="display:flex;gap:6px;">
-          <button id="autoMatchBtn" class="btn btn-primary btn-sm">✨ Auto-Combinar</button>
-          <button id="saveOutfitBtn" class="btn btn-accent btn-sm">❤️ Guardar Match</button>
-        </div>
+        <button id="saveOutfitBtn" class="btn btn-accent btn-sm">❤️ Guardar Match</button>
       </div>
       <select id="anchorCategorySelect">
         <option value="superior">Elegir desde: Parte Superior</option>
@@ -702,8 +861,23 @@
         <option value="inferior">Elegir desde: Parte Inferior</option>
         <option value="calzado">Elegir desde: Calzado</option>
       </select>
-      <div style="font-size:0.75rem;color:#4338ca;margin-top:6px;">
-        Desliza o usa las flechas en la prenda base; el resto se ordenará priorizando tus matches guardados y armonía de color.
+
+      <!-- SORPRÉNDEME: GENERADOR ALEATORIO POR ESTILO CON MATCHES (4 PIEZAS) -->
+      <div class="surprise-box">
+        <div style="font-size:0.76rem;font-weight:800;color:#5b21b6;margin-bottom:6px;">
+          🎲 Look aleatorio completo (4 piezas) con tus matches:
+        </div>
+        <div class="grid-2" style="gap:8px;">
+          <select id="surpriseStyleSelect" style="padding:8px 10px;font-size:0.84rem;font-weight:600;">
+            <option value="any">✨ Cualquier estilo</option>
+            <option value="casual">👟 Estilo Casual</option>
+            <option value="trabajo">💼 Estilo Trabajo</option>
+            <option value="elegante">🎩 Estilo Elegante</option>
+          </select>
+          <button id="surpriseMeBtn" class="btn btn-surprise btn-sm" style="width:100%;">
+            🎲 ¡Sorpréndeme!
+          </button>
+        </div>
       </div>
     </div>
 
@@ -754,15 +928,15 @@
       <button class="btn btn-secondary btn-sm" onclick="closeModal('helpModal')">Cerrar</button>
     </div>
     <p style="font-size:0.86rem;color:var(--text);line-height:1.45;margin-top:0;">
-      Gestiona el inventario visual de tu ropa, elimina automáticamente el fondo de tus fotos y crea combinaciones inteligentes incluso sin conexión a internet.
+      Gestiona el inventario visual de tu ropa, transforma tus fotos en imágenes de catálogo sin percha ni fondo mediante IA, clasifica cada prenda por estilos y genera combinaciones completas de 4 piezas.
     </p>
     <div style="background:var(--surface-2);border-radius:12px;padding:12px;font-size:0.82rem;line-height:1.5;">
       <div style="font-weight:700;margin-bottom:6px;color:var(--primary);">📋 Instrucciones rápidas:</div>
       <ol style="margin:0;padding-left:18px;">
-        <li><b>Cuenta Google:</b> Pulsa tu perfil arriba a la derecha para iniciar sesión con Google y aislar tus prendas en tu propio armario personal sincronizado en la nube.</li>
-        <li><b>Añadir prendas:</b> En la pestaña <b>Añadir</b>, haz una foto o súbela de galería. El fondo pasará a blanco puro y Gemini IA detectará categoría, color y antigüedad.</li>
-        <li><b>Emparejar y Combinar:</b> Usa el botón <b>🔗</b> en cada prenda o entra en <b>Combinar</b>, elige tu prenda base y desliza las categorías para descubrir los mejores matches.</li>
-        <li><b>Modo Offline:</b> Todo funciona sin conexión; los cambios se sincronizan con la nube automáticamente al recuperar internet.</li>
+        <li><b>Cuenta Google y Nube:</b> Pulsa tu perfil arriba a la derecha para iniciar sesión con Google. La nube verde indica conexión activa y sincronización automática.</li>
+        <li><b>Foto de estudio y estilos múltiples:</b> En <b>Añadir</b>, haz una foto. La IA quitará la percha y el fondo, y asignará uno o varios estilos (<b>Casual</b>, <b>Trabajo</b>, <b>Elegante</b>).</li>
+        <li><b>Deshacer cambios:</b> Si eliminas o editas una prenda por error, pulsa <b>Deshacer</b> en el aviso inferior o el botón <b>↩️</b> de la barra superior para restaurarla al instante.</li>
+        <li><b>¡Sorpréndeme! y Combinador:</b> En <b>Combinar</b>, elige un estilo y pulsa <b>🎲 ¡Sorpréndeme!</b> para generar un conjunto aleatorio completo de 4 piezas priorizando tus matches guardados.</li>
       </ol>
     </div>
   </div>
@@ -820,12 +994,17 @@
     </div>
 
     <div style="margin-bottom:12px;">
-      <label for="geminiKeyInput">Gemini API Key (opcional — análisis automático)</label>
+      <label for="geminiKeyInput">Gemini API Key (análisis y foto estudio de tienda)</label>
       <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." />
     </div>
 
+    <div class="toggle-row">
+      <span>🪄 Generar foto estilo tienda (sin percha/fondo) con IA</span>
+      <input type="checkbox" id="enableStudioPhotoCheckbox" checked style="width:18px;height:18px;" />
+    </div>
+
     <div style="margin-bottom:14px;">
-      <label for="geminiModelSelect">Modelo de IA principal (Timeout 5s + 5 reintentos con fallback)</label>
+      <label for="geminiModelSelect">Modelo de IA datos (Timeout 5s + 5 reintentos con fallback)</label>
       <select id="geminiModelSelect">
         <option value="gemini-3.1-flash-lite" selected>Gemini 3.1 Flash-Lite (Por defecto • Ultra rápido)</option>
         <option value="gemini-3.8-flash">Gemini 3.8 Flash (Alta precisión multimodal)</option>
@@ -838,10 +1017,7 @@
 
     <div style="margin-bottom:12px;">
       <label for="firebaseConfigInput">Configuración Web de Firebase (preconfigurada por defecto)</label>
-      <textarea id="firebaseConfigInput" rows="5"></textarea>
-      <div style="font-size:0.73rem;color:var(--muted);margin-top:4px;">
-        Ya incluye la configuración por defecto del proyecto <code>vestia-87980</code>. Puedes editarla aquí si deseas usar otro proyecto.
-      </div>
+      <textarea id="firebaseConfigInput" rows="4"></textarea>
     </div>
 
     <div class="grid-2" style="margin-bottom:12px;">
@@ -868,13 +1044,16 @@
       <button class="btn btn-secondary btn-sm" onclick="closeModal('matchModal')">Listo</button>
     </div>
     <p style="font-size:0.82rem;color:var(--muted);margin-top:0;">
-      Marca las prendas que combinan bien con esta. El combinador las sugerirá en primer lugar.
+      Marca las prendas que combinan bien con esta. El combinador y el botón <b>¡Sorpréndeme!</b> las priorizarán.
     </p>
     <div id="matchCandidatesList"></div>
   </div>
 </div>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast">
+  <span id="toastText"></span>
+  <button id="toastUndoBtn" class="toast-undo-btn hidden">↩️ Deshacer</button>
+</div>
 
 <!-- Firebase Compat SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -976,6 +1155,8 @@ const CATEGORIES = [
   { key: 'calzado',  label: 'Calzado', icon: '👟' }
 ];
 
+const STYLES_LIST = ['casual', 'trabajo', 'elegante'];
+
 const AVAILABLE_GEMINI_MODELS = [
   'gemini-3.1-flash-lite',
   'gemini-3.8-flash',
@@ -985,17 +1166,26 @@ const AVAILABLE_GEMINI_MODELS = [
   'gemini-2.5-flash'
 ];
 
+const IMAGE_EDIT_MODELS = [
+  'gemini-2.5-flash-image',
+  'gemini-3.1-flash-image-preview',
+  'gemini-2.0-flash-exp-image-generation'
+];
+
 const state = {
   user: JSON.parse(localStorage.getItem('vestia_cached_user') || 'null'),
   garments: [],
   outfits: [],
   filterCat: 'all',
+  filterStyle: 'all',
   anchorCat: 'superior',
   studioIndices: { superior: 0, cinturon: 0, inferior: 0, calzado: 0 },
   studioLists: { superior: [], cinturon: [], inferior: [], calzado: [] },
   rawImageDataUrl: null,
-  processedImageDataUrl: null,
-  showingOriginal: false
+  localCutoutDataUrl: null,
+  aiStudioDataUrl: null,
+  activePreviewMode: 'studio',
+  undoSnapshot: null // Stores { type: 'delete' | 'edit', garment: {...}, affectedPeers: [...] }
 };
 
 function getCurrentOwnerId() {
@@ -1032,22 +1222,86 @@ function parseFirebaseConfigInput(raw) {
 function getSettings() {
   const rawFb = localStorage.getItem('vestia_firebase_config') || '';
   const fbConfig = parseFirebaseConfigInput(rawFb) || DEFAULT_FIREBASE_CONFIG;
+  const studioPref = localStorage.getItem('vestia_enable_studio_photo');
   return {
     geminiKey: localStorage.getItem('vestia_gemini_key') || '',
     geminiModel: localStorage.getItem('vestia_gemini_model') || 'gemini-3.1-flash-lite',
+    enableStudioPhoto: studioPref === null ? true : studioPref === 'true',
     firebaseConfigRaw: rawFb || JSON.stringify(DEFAULT_FIREBASE_CONFIG, null, 2),
     firebaseConfig: fbConfig,
     firebaseUrl: fbConfig && fbConfig.databaseURL ? fbConfig.databaseURL.replace(/\/+$/, '') : ''
   };
 }
 
-function showToast(msg) {
+function showToast(msg, withUndo = false) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  const txt = document.getElementById('toastText');
+  const undoBtn = document.getElementById('toastUndoBtn');
+
+  txt.textContent = msg;
+  if (withUndo && state.undoSnapshot) {
+    undoBtn.classList.remove('hidden');
+  } else {
+    undoBtn.classList.add('hidden');
+  }
+
   t.classList.add('show');
   clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+  t._timer = setTimeout(() => {
+    t.classList.remove('show');
+  }, withUndo ? 6000 : 3000);
 }
+
+/* ==========================================================================
+   3B. UNDO SYSTEM FOR GARMENT EDIT & DELETE
+   ========================================================================== */
+function setUndoSnapshot(snapshot) {
+  state.undoSnapshot = snapshot;
+  const headerUndo = document.getElementById('undoHeaderBtn');
+  if (snapshot) {
+    headerUndo.classList.remove('hidden');
+  } else {
+    headerUndo.classList.add('hidden');
+  }
+}
+
+async function performUndo() {
+  const snap = state.undoSnapshot;
+  if (!snap) return;
+
+  const restoredGarment = {
+    ...snap.garment,
+    updatedAt: Date.now()
+  };
+
+  await idbPut('garments', restoredGarment);
+  await enqueueSync('garments', 'put', restoredGarment.id, restoredGarment);
+
+  // Restore bidirectional match references on peer garments if it was a deletion
+  if (snap.type === 'delete' && Array.isArray(snap.affectedPeers)) {
+    for (const peerSnapshot of snap.affectedPeers) {
+      const currentPeer = state.garments.find(g => g.id === peerSnapshot.id);
+      if (currentPeer) {
+        currentPeer.matches = Array.from(new Set([...(currentPeer.matches || []), restoredGarment.id]));
+        currentPeer.updatedAt = Date.now();
+        await idbPut('garments', currentPeer);
+        await enqueueSync('garments', 'put', currentPeer.id, currentPeer);
+      }
+    }
+  }
+
+  setUndoSnapshot(null);
+  await reloadLocalState();
+  renderWardrobe();
+  if (document.getElementById('view-studio').classList.contains('active')) {
+    rebuildStudioLists();
+    renderStudio();
+  }
+  showToast(snap.type === 'delete' ? 'Prenda restaurada' : 'Edición deshecha');
+}
+
+document.getElementById('toastUndoBtn').addEventListener('click', performUndo);
+document.getElementById('undoHeaderBtn').addEventListener('click', performUndo);
 
 /* ==========================================================================
    4. FIREBASE AUTHENTICATION (GOOGLE SIGN-IN)
@@ -1131,6 +1385,7 @@ async function handleGoogleSignOut() {
   }
   state.user = null;
   localStorage.removeItem('vestia_cached_user');
+  setUndoSnapshot(null);
   updateAccountUI();
   await reloadLocalState();
   renderWardrobe();
@@ -1205,7 +1460,7 @@ document.getElementById('migrateGuestBtn').addEventListener('click', async () =>
 });
 
 /* ==========================================================================
-   5. FIREBASE REALTIME DATABASE EFFICIENT SYNC (USER-SCOPED + AUTH TOKEN)
+   5. FIREBASE REALTIME DATABASE EFFICIENT SYNC (GREEN = ONLINE, GREY = OFFLINE)
    ========================================================================== */
 async function getFirebaseIdToken() {
   if (firebaseAuthInstance && firebaseAuthInstance.currentUser) {
@@ -1235,24 +1490,27 @@ async function enqueueSync(entity, action, id, payload = null) {
 }
 
 async function updateSyncIndicator() {
-  const dot = document.getElementById('syncDot');
-  const label = document.getElementById('syncLabel');
-  const { firebaseUrl } = getSettings();
+  const btn = document.getElementById('syncStatusBtn');
+  const badge = document.getElementById('cloudQueueBadge');
   const ownerId = getCurrentOwnerId();
   const allQueue = db ? await idbGetAll('syncQueue') : [];
   const queue = allQueue.filter(q => q.ownerId === ownerId);
 
-  dot.className = 'sync-dot';
-  if (!navigator.onLine) {
-    dot.classList.add('offline');
-    label.textContent = queue.length ? `Offline (${queue.length})` : 'Offline';
-  } else if (!state.user || !firebaseUrl) {
-    label.textContent = 'Local';
-  } else if (queue.length > 0) {
-    dot.classList.add('pending');
-    label.textContent = `Subiendo (${queue.length})`;
+  btn.classList.remove('online', 'offline', 'pending');
+  if (navigator.onLine) {
+    btn.classList.add('online');
+    btn.title = queue.length ? `Online • Sincronizando (${queue.length})` : 'Online';
   } else {
-    label.textContent = 'Nube OK';
+    btn.classList.add('offline');
+    btn.title = queue.length ? `Sin conexión • ${queue.length} cambios pendientes` : 'Sin conexión (Offline)';
+  }
+
+  if (queue.length > 0) {
+    btn.classList.add('pending');
+    badge.textContent = queue.length;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
   }
 }
 
@@ -1312,6 +1570,7 @@ async function pullFromFirebase() {
         if (!lg || (rg.updatedAt || 0) > (lg.updatedAt || 0)) {
           rg.ownerId = uid;
           rg.storageKey = makeStorageKey(uid, rg.id);
+          rg.styles = Array.isArray(rg.styles) && rg.styles.length ? rg.styles : ['casual'];
           await idbPut('garments', rg);
         }
       }
@@ -1341,7 +1600,7 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', updateSyncIndicator);
 
 /* ==========================================================================
-   6. IMAGE PROCESSING: AUTO BACKGROUND REMOVAL -> PURE WHITE & COMPRESSION
+   6. IMAGE PROCESSING: LOCAL FALLBACK CUTOUT + NORMALIZATION FOR STORAGE
    ========================================================================== */
 function loadImageFromFile(file) {
   return new Promise((resolve, reject) => {
@@ -1355,6 +1614,44 @@ function loadImageFromFile(file) {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
+
+function loadImageFromDataUrl(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
+async function normalizeStudioPhotoToWhite(dataUrl) {
+  const img = await loadImageFromDataUrl(dataUrl);
+  const maxDim = 640;
+  let w = img.naturalWidth || img.width;
+  let h = img.naturalHeight || img.height;
+  if (w > maxDim || h > maxDim) {
+    const ratio = Math.min(maxDim / w, maxDim / h);
+    w = Math.round(w * ratio);
+    h = Math.round(h * ratio);
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(img, 0, 0, w, h);
+
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const d = imgData.data;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i] > 244 && d[i + 1] > 244 && d[i + 2] > 244) {
+      d[i] = 255; d[i + 1] = 255; d[i + 2] = 255;
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+  return canvas.toDataURL('image/jpeg', 0.86);
 }
 
 function removeBackgroundToWhite(img, tolerance = 36) {
@@ -1462,7 +1759,7 @@ function extractDominantColor(data) {
 }
 
 /* ==========================================================================
-   7. GEMINI AI INTEGRATION WITH 5s TIMEOUT + 5 MODEL FALLBACK RETRIES
+   7. GEMINI AI: STUDIO E-COMMERCE RETOUCHING + METADATA & STYLES EXTRACTION
    ========================================================================== */
 function setAiProgress(visible, text = '') {
   const banner = document.getElementById('aiProgressBanner');
@@ -1485,6 +1782,60 @@ async function fetchWithTimeout(url, options, timeoutMs = 5000) {
   }
 }
 
+async function generateStudioGarmentPhoto(rawBase64DataUrl) {
+  const { geminiKey } = getSettings();
+  if (!geminiKey || !navigator.onLine) return null;
+
+  const base64Clean = rawBase64DataUrl.split(',')[1];
+  const prompt = `Edit this exact clothing item photo into a professional e-commerce studio product packshot.
+Rules:
+1. Keep the EXACT original garment (same fabric texture, exact color, pattern, buttons, seams, logos, and wear details) without inventing a different garment.
+2. Completely remove any hanger, hook, hands, clips, mannequin, or cluttered background.
+3. Arrange, straighten, and neatly shape the garment flat-lay or invisible ghost-mannequin style, centered and symmetrical as seen in an online fashion store catalog.
+4. Place it on a solid, uniform pure white background (#FFFFFF) with soft, natural minimal studio lighting and no harsh drop shadows.`;
+
+  const requestBody = JSON.stringify({
+    contents: [{
+      parts: [
+        { text: prompt },
+        { inline_data: { mime_type: 'image/jpeg', data: base64Clean } }
+      ]
+    }],
+    generationConfig: {
+      responseModalities: ['IMAGE'],
+      temperature: 0.2
+    }
+  });
+
+  for (let i = 0; i < IMAGE_EDIT_MODELS.length; i++) {
+    const model = IMAGE_EDIT_MODELS[i];
+    setAiProgress(true, `🪄 Creando foto de tienda sin percha (${model})...`);
+    try {
+      const res = await fetchWithTimeout(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(geminiKey)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: requestBody
+        },
+        18000
+      );
+      if (!res.ok) continue;
+      const json = await res.json();
+      const parts = json?.candidates?.[0]?.content?.parts || [];
+      const imgPart = parts.find(p => p.inline_data && p.inline_data.data) || parts.find(p => p.inlineData && p.inlineData.data);
+      if (imgPart) {
+        const inline = imgPart.inline_data || imgPart.inlineData;
+        const mime = inline.mime_type || inline.mimeType || 'image/png';
+        const rawOutUrl = `data:${mime};base64,${inline.data}`;
+        const normalizedUrl = await normalizeStudioPhotoToWhite(rawOutUrl);
+        return { studioDataUrl: normalizedUrl, usedModel: model };
+      }
+    } catch (e) {}
+  }
+  return null;
+}
+
 async function analyzeGarmentWithGemini(base64DataUrl) {
   const { geminiKey, geminiModel } = getSettings();
   if (!geminiKey || !navigator.onLine) return null;
@@ -1494,6 +1845,7 @@ async function analyzeGarmentWithGemini(base64DataUrl) {
 {
   "name": "Nombre corto y descriptivo en español (ej. Camiseta básica algodón, Pantalón chino, Zapatillas running)",
   "category": "Una de estas 4 opciones exactas: superior | cinturon | inferior | calzado",
+  "styles": ["Lista de 1 a 3 estilos aplicables elegidos SOLO entre: casual | trabajo | elegante"],
   "colorName": "Nombre del color principal en español (ej. Azul marino, Negro, Beige)",
   "colorHex": "Código hexadecimal aproximado del color principal (ej. #1e3a8a)",
   "age": "Antigüedad estimada según aspecto y desgaste, una de: Nueva (< 6 meses) | Reciente (6-12 meses) | 1-2 años | 3-5 años | Vintage (+5 años)"
@@ -1519,8 +1871,8 @@ async function analyzeGarmentWithGemini(base64DataUrl) {
     const model = attemptQueue[i];
     const isRetry = i > 0;
     const statusMsg = isRetry
-      ? `Reintento ${i}/5 con ${model} (timeout 5s)...`
-      : `Analizando con ${model}...`;
+      ? `Reintento ${i}/5 datos con ${model} (timeout 5s)...`
+      : `Detectando categoría, estilos y color con ${model}...`;
 
     setAiProgress(true, statusMsg);
     if (isRetry) showToast(statusMsg);
@@ -1540,18 +1892,43 @@ async function analyzeGarmentWithGemini(base64DataUrl) {
       const json = await res.json();
       const text = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
       const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-      setAiProgress(false);
       return { data: parsed, usedModel: model };
     } catch (e) {}
   }
 
-  setAiProgress(false);
   return null;
 }
 
 /* ==========================================================================
-   8. NAVIGATION & WARDROBE RENDERING
+   8. MULTI-STYLE SELECTOR & NAVIGATION & WARDROBE RENDERING
    ========================================================================== */
+document.querySelectorAll('#garmentStylesSelector .style-pill-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('selected');
+    const selected = getSelectedFormStyles();
+    if (!selected.length) {
+      btn.classList.add('selected');
+      showToast('Selecciona al menos un estilo para la prenda');
+    }
+  });
+});
+
+function getSelectedFormStyles() {
+  return Array.from(document.querySelectorAll('#garmentStylesSelector .style-pill-btn.selected'))
+    .map(b => b.dataset.style);
+}
+
+function setSelectedFormStyles(stylesArr) {
+  const valid = Array.isArray(stylesArr) && stylesArr.length ? stylesArr : ['casual'];
+  document.querySelectorAll('#garmentStylesSelector .style-pill-btn').forEach(btn => {
+    if (valid.includes(btn.dataset.style)) {
+      btn.classList.add('selected');
+    } else {
+      btn.classList.remove('selected');
+    }
+  });
+}
+
 function switchTab(tabName) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -1577,14 +1954,31 @@ document.querySelectorAll('#categoryChips .chip').forEach(chip => {
   });
 });
 
+document.querySelectorAll('#styleFilterChips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#styleFilterChips .chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    state.filterStyle = chip.dataset.style;
+    renderWardrobe();
+  });
+});
+
+function renderStyleBadgesHtml(styles) {
+  const list = Array.isArray(styles) && styles.length ? styles : ['casual'];
+  return list.map(st => `<span class="style-tag ${st}">${escapeHtml(st)}</span>`).join('');
+}
+
 function renderWardrobe() {
   document.getElementById('count-all').textContent = state.garments.length;
   const grid = document.getElementById('wardrobeGrid');
   const empty = document.getElementById('wardrobeEmpty');
 
-  const filtered = state.filterCat === 'all'
-    ? state.garments
-    : state.garments.filter(g => g.category === state.filterCat);
+  const filtered = state.garments.filter(g => {
+    const catOk = state.filterCat === 'all' || g.category === state.filterCat;
+    const gStyles = Array.isArray(g.styles) && g.styles.length ? g.styles : ['casual'];
+    const styleOk = state.filterStyle === 'all' || gStyles.includes(state.filterStyle);
+    return catOk && styleOk;
+  });
 
   if (!filtered.length) {
     grid.innerHTML = '';
@@ -1607,6 +2001,9 @@ function renderWardrobe() {
             <span>${catObj.icon} ${catObj.label}</span>
           </div>
           <div class="garment-meta">
+            ${renderStyleBadgesHtml(g.styles)}
+          </div>
+          <div class="garment-meta">
             <span class="color-dot" style="background:${g.colorHex || '#64748b'}"></span>
             <span>${escapeHtml(g.colorName || 'Color')}</span>
             <span>• ${escapeHtml(g.age || '1-2 años')}</span>
@@ -1625,14 +2022,58 @@ function renderWardrobe() {
 }
 
 /* ==========================================================================
-   9. ADD / EDIT GARMENT FORM HANDLERS
+   9. ADD / EDIT GARMENT FORM HANDLERS (WITH UNDO SNAPSHOT ON SAVE/DELETE)
    ========================================================================== */
+function getActiveGarmentImageUrl() {
+  if (state.activePreviewMode === 'studio' && state.aiStudioDataUrl) return state.aiStudioDataUrl;
+  if (state.activePreviewMode === 'original' && state.rawImageDataUrl) return state.rawImageDataUrl;
+  return state.localCutoutDataUrl || state.aiStudioDataUrl || state.rawImageDataUrl;
+}
+
+function updatePreviewDisplay() {
+  const imgEl = document.getElementById('previewImg');
+  const phEl = document.getElementById('previewPlaceholder');
+  const tagEl = document.getElementById('previewModeTag');
+  const cycleBtn = document.getElementById('cyclePreviewBtn');
+
+  const src = getActiveGarmentImageUrl();
+  if (src) {
+    imgEl.src = src;
+    imgEl.classList.remove('hidden');
+    phEl.classList.add('hidden');
+    tagEl.classList.remove('hidden');
+
+    if (state.activePreviewMode === 'studio' && state.aiStudioDataUrl) {
+      tagEl.textContent = '🪄 Foto Tienda IA';
+      cycleBtn.textContent = '👁️ Recorte Local';
+    } else if (state.activePreviewMode === 'local') {
+      tagEl.textContent = '✂️ Recorte Local';
+      cycleBtn.textContent = '👁️ Ver Original';
+    } else {
+      tagEl.textContent = '📷 Original';
+      cycleBtn.textContent = state.aiStudioDataUrl ? '👁️ Foto Tienda' : '👁️ Recorte Local';
+    }
+  } else {
+    imgEl.classList.add('hidden');
+    tagEl.classList.add('hidden');
+    phEl.classList.remove('hidden');
+  }
+}
+
 function applyAiResultToForm(result) {
   if (!result || !result.data) return;
   const aiData = result.data;
   if (aiData.name) document.getElementById('garmentName').value = aiData.name;
   if (aiData.category && CATEGORIES.some(cat => cat.key === aiData.category)) {
     document.getElementById('garmentCategory').value = aiData.category;
+  }
+  if (Array.isArray(aiData.styles)) {
+    const filteredStyles = aiData.styles
+      .map(s => String(s).toLowerCase().trim())
+      .filter(s => STYLES_LIST.includes(s));
+    if (filteredStyles.length) {
+      setSelectedFormStyles(filteredStyles);
+    }
   }
   if (aiData.colorName) document.getElementById('garmentColorName').value = aiData.colorName;
   if (aiData.colorHex && /^#[0-9A-Fa-f]{6}$/.test(aiData.colorHex)) {
@@ -1643,53 +2084,60 @@ function applyAiResultToForm(result) {
     const opt = Array.from(ageSelect.options).find(o => o.value === aiData.age);
     if (opt) ageSelect.value = aiData.age;
   }
-  showToast(`✨ Analizado con ${result.usedModel}`);
 }
 
 async function handleImageSelected(file) {
   if (!file) return;
-  showToast('Recortando fondo a blanco...');
   const img = await loadImageFromFile(file);
 
   const c = document.createElement('canvas');
-  const ratio = Math.min(1, 640 / Math.max(img.width, img.height));
+  const ratio = Math.min(1, 768 / Math.max(img.width, img.height));
   c.width = Math.round(img.width * ratio);
   c.height = Math.round(img.height * ratio);
   c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-  state.rawImageDataUrl = c.toDataURL('image/jpeg', 0.88);
+  state.rawImageDataUrl = c.toDataURL('image/jpeg', 0.9);
   state._loadedImgElement = img;
 
   const tol = Number(document.getElementById('bgTolerance').value);
   const { whiteBgDataUrl, dominantHex } = removeBackgroundToWhite(img, tol);
-  state.processedImageDataUrl = whiteBgDataUrl;
-  state.showingOriginal = false;
+  state.localCutoutDataUrl = whiteBgDataUrl;
+  state.aiStudioDataUrl = null;
+  state.activePreviewMode = 'local';
 
   updatePreviewDisplay();
   document.getElementById('bgToolsRow').classList.remove('hidden');
   document.getElementById('garmentColorHex').value = dominantHex;
 
-  const { geminiKey } = getSettings();
+  const { geminiKey, enableStudioPhoto } = getSettings();
   if (geminiKey && navigator.onLine) {
-    const result = await analyzeGarmentWithGemini(whiteBgDataUrl);
-    if (result) {
-      applyAiResultToForm(result);
-    } else {
-      showToast('Sin respuesta de IA tras 5 reintentos; rellena manualmente');
-    }
-  }
-}
+    const studioPromise = enableStudioPhoto
+      ? generateStudioGarmentPhoto(state.rawImageDataUrl)
+      : Promise.resolve(null);
+    const metaPromise = analyzeGarmentWithGemini(whiteBgDataUrl);
 
-function updatePreviewDisplay() {
-  const imgEl = document.getElementById('previewImg');
-  const phEl = document.getElementById('previewPlaceholder');
-  const src = state.showingOriginal ? state.rawImageDataUrl : state.processedImageDataUrl;
-  if (src) {
-    imgEl.src = src;
-    imgEl.classList.remove('hidden');
-    phEl.classList.add('hidden');
+    const [studioRes, metaRes] = await Promise.all([studioPromise, metaPromise]);
+    setAiProgress(false);
+
+    if (studioRes && studioRes.studioDataUrl) {
+      state.aiStudioDataUrl = studioRes.studioDataUrl;
+      state.activePreviewMode = 'studio';
+      updatePreviewDisplay();
+    }
+    if (metaRes) {
+      applyAiResultToForm(metaRes);
+    }
+
+    if (studioRes && metaRes) {
+      showToast('🪄 Foto estilo tienda y datos generados con IA');
+    } else if (studioRes) {
+      showToast('🪄 Foto estilo tienda generada sin percha ni fondo');
+    } else if (metaRes) {
+      showToast(`✨ Datos detectados con ${metaRes.usedModel}`);
+    } else {
+      showToast('Recorte local aplicado (sin respuesta de IA)');
+    }
   } else {
-    imgEl.classList.add('hidden');
-    phEl.classList.remove('hidden');
+    showToast('Fondo recortado a blanco en modo local');
   }
 }
 
@@ -1699,28 +2147,53 @@ document.getElementById('galleryInput').addEventListener('change', (e) => handle
 document.getElementById('bgTolerance').addEventListener('input', (e) => {
   if (!state._loadedImgElement) return;
   const { whiteBgDataUrl } = removeBackgroundToWhite(state._loadedImgElement, Number(e.target.value));
-  state.processedImageDataUrl = whiteBgDataUrl;
-  state.showingOriginal = false;
+  state.localCutoutDataUrl = whiteBgDataUrl;
+  state.activePreviewMode = 'local';
   updatePreviewDisplay();
 });
 
-document.getElementById('toggleOrigBtn').addEventListener('click', () => {
-  state.showingOriginal = !state.showingOriginal;
-  document.getElementById('toggleOrigBtn').textContent = state.showingOriginal ? 'Ver fondo blanco' : 'Ver original';
+document.getElementById('cyclePreviewBtn').addEventListener('click', () => {
+  const order = state.aiStudioDataUrl ? ['studio', 'local', 'original'] : ['local', 'original'];
+  const nextIdx = (order.indexOf(state.activePreviewMode) + 1) % order.length;
+  state.activePreviewMode = order[nextIdx];
   updatePreviewDisplay();
 });
 
-document.getElementById('reanalyzeAiBtn').addEventListener('click', async () => {
-  if (!state.processedImageDataUrl) return;
+document.getElementById('studioRetouchBtn').addEventListener('click', async () => {
+  const sourceUrl = state.rawImageDataUrl || state.localCutoutDataUrl;
+  if (!sourceUrl) return;
   const { geminiKey } = getSettings();
   if (!geminiKey) {
     openModal('settingsModal');
     showToast('Configura tu API Key de Gemini primero');
     return;
   }
-  const result = await analyzeGarmentWithGemini(state.processedImageDataUrl);
+  const studioRes = await generateStudioGarmentPhoto(sourceUrl);
+  setAiProgress(false);
+  if (studioRes && studioRes.studioDataUrl) {
+    state.aiStudioDataUrl = studioRes.studioDataUrl;
+    state.activePreviewMode = 'studio';
+    updatePreviewDisplay();
+    showToast('🪄 Prenda colocada sobre blanco sin percha');
+  } else {
+    showToast('No se pudo generar la foto de estudio; usando recorte local');
+  }
+});
+
+document.getElementById('reanalyzeAiBtn').addEventListener('click', async () => {
+  const imgUrl = getActiveGarmentImageUrl();
+  if (!imgUrl) return;
+  const { geminiKey } = getSettings();
+  if (!geminiKey) {
+    openModal('settingsModal');
+    showToast('Configura tu API Key de Gemini primero');
+    return;
+  }
+  const result = await analyzeGarmentWithGemini(imgUrl);
+  setAiProgress(false);
   if (result) {
     applyAiResultToForm(result);
+    showToast(`✨ Analizado con ${result.usedModel}`);
   } else {
     showToast('Sin respuesta tras 5 reintentos con los modelos disponibles');
   }
@@ -1729,18 +2202,30 @@ document.getElementById('reanalyzeAiBtn').addEventListener('click', async () => 
 document.getElementById('saveGarmentBtn').addEventListener('click', async () => {
   const name = document.getElementById('garmentName').value.trim();
   const category = document.getElementById('garmentCategory').value;
+  const styles = getSelectedFormStyles();
   const colorName = document.getElementById('garmentColorName').value.trim() || 'Neutro';
   const colorHex = document.getElementById('garmentColorHex').value;
   const age = document.getElementById('garmentAge').value;
   const editId = document.getElementById('editGarmentId').value;
 
-  if (!state.processedImageDataUrl) {
+  const finalImage = getActiveGarmentImageUrl();
+  if (!finalImage) {
     showToast('Añade primero una foto de la prenda');
     return;
   }
 
   const ownerId = getCurrentOwnerId();
   const existing = editId ? state.garments.find(g => g.id === editId) : null;
+
+  // Save Undo Snapshot before applying edit
+  if (existing) {
+    setUndoSnapshot({
+      type: 'edit',
+      garment: JSON.parse(JSON.stringify(existing)),
+      affectedPeers: []
+    });
+  }
+
   const itemId = editId || 'g_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
   const garment = {
     id: itemId,
@@ -1748,10 +2233,11 @@ document.getElementById('saveGarmentBtn').addEventListener('click', async () => 
     storageKey: makeStorageKey(ownerId, itemId),
     name: name || `${CATEGORIES.find(c => c.key === category).label} ${colorName}`,
     category,
+    styles,
     colorName,
     colorHex,
     age,
-    image: state.processedImageDataUrl,
+    image: finalImage,
     matches: existing ? (existing.matches || []) : [],
     updatedAt: Date.now()
   };
@@ -1761,7 +2247,11 @@ document.getElementById('saveGarmentBtn').addEventListener('click', async () => 
   await enqueueSync('garments', 'put', garment.id, garment);
 
   resetGarmentForm();
-  showToast('Prenda guardada en tu armario');
+  if (existing) {
+    showToast('Prenda actualizada', true);
+  } else {
+    showToast('Prenda guardada en tu armario');
+  }
   switchTab('wardrobe');
 });
 
@@ -1772,10 +2262,13 @@ function resetGarmentForm() {
   document.getElementById('garmentColorName').value = '';
   document.getElementById('garmentColorHex').value = '#3b82f6';
   document.getElementById('garmentAge').value = '1-2 años';
+  setSelectedFormStyles(['casual']);
   document.getElementById('bgToolsRow').classList.add('hidden');
   setAiProgress(false);
   state.rawImageDataUrl = null;
-  state.processedImageDataUrl = null;
+  state.localCutoutDataUrl = null;
+  state.aiStudioDataUrl = null;
+  state.activePreviewMode = 'studio';
   state._loadedImgElement = null;
   updatePreviewDisplay();
 }
@@ -1788,16 +2281,37 @@ function editGarment(id) {
   document.getElementById('formHeading').textContent = 'Editar Prenda';
   document.getElementById('garmentName').value = g.name;
   document.getElementById('garmentCategory').value = g.category;
+  setSelectedFormStyles(g.styles || ['casual']);
   document.getElementById('garmentColorName').value = g.colorName || '';
   document.getElementById('garmentColorHex').value = g.colorHex || '#3b82f6';
   document.getElementById('garmentAge').value = g.age || '1-2 años';
-  state.processedImageDataUrl = g.image;
+  state.localCutoutDataUrl = g.image;
   state.rawImageDataUrl = g.image;
+  state.aiStudioDataUrl = null;
+  state.activePreviewMode = 'local';
+  document.getElementById('bgToolsRow').classList.remove('hidden');
   updatePreviewDisplay();
   switchTab('add');
 }
 
 async function deleteGarment(id) {
+  const target = state.garments.find(g => g.id === id);
+  if (!target) return;
+
+  const affectedPeers = [];
+  for (const g of state.garments) {
+    if (g.matches && g.matches.includes(id)) {
+      affectedPeers.push({ id: g.id });
+    }
+  }
+
+  // Store complete snapshot for Undo
+  setUndoSnapshot({
+    type: 'delete',
+    garment: JSON.parse(JSON.stringify(target)),
+    affectedPeers
+  });
+
   const ownerId = getCurrentOwnerId();
   await idbDelete('garments', makeStorageKey(ownerId, id));
   for (const g of state.garments) {
@@ -1811,7 +2325,7 @@ async function deleteGarment(id) {
   await reloadLocalState();
   await enqueueSync('garments', 'delete', id);
   renderWardrobe();
-  showToast('Prenda eliminada');
+  showToast('Prenda eliminada', true);
 }
 
 /* ==========================================================================
@@ -1880,7 +2394,7 @@ async function handleMatchCheckbox(idA, idB) {
 }
 
 /* ==========================================================================
-   11. OUTFIT COMBINATOR (SLIDE CAROUSELS + SMART RANKING BY MATCH & COLOR)
+   11. OUTFIT COMBINATOR + 'SORPRÉNDEME' 4-PIECE MATCH GENERATOR BY STYLE
    ========================================================================== */
 function hexToHsl(hex) {
   let r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -1914,6 +2428,12 @@ function colorHarmonyScore(hexA, hexB) {
   if (Math.abs(hueDist - 180) <= 28) return 0.9;
   if (Math.abs(hueDist - 120) <= 25) return 0.75;
   return 0.4;
+}
+
+function garmentHasStyle(garment, targetStyle) {
+  if (!targetStyle || targetStyle === 'any') return true;
+  const gStyles = Array.isArray(garment.styles) && garment.styles.length ? garment.styles : ['casual'];
+  return gStyles.includes(targetStyle);
 }
 
 function rebuildStudioLists() {
@@ -1953,23 +2473,77 @@ document.getElementById('anchorCategorySelect').addEventListener('change', (e) =
   renderStudio();
 });
 
-document.getElementById('autoMatchBtn').addEventListener('click', () => {
+document.getElementById('surpriseMeBtn').addEventListener('click', () => {
+  const targetStyle = document.getElementById('surpriseStyleSelect').value;
   const anchorCat = state.anchorCat;
-  const anchorList = state.studioLists[anchorCat] || [];
-  if (anchorList.length > 1) {
-    state.studioIndices[anchorCat] = Math.floor(Math.random() * anchorList.length);
+  const anchorAll = state.garments.filter(g => g.category === anchorCat);
+
+  if (!anchorAll.length) {
+    showToast('Añade prendas a tu armario para usar ¡Sorpréndeme!');
+    return;
   }
+
+  let anchorPool = anchorAll.filter(g => garmentHasStyle(g, targetStyle));
+  let styleFallbackUsed = false;
+  if (!anchorPool.length) {
+    anchorPool = anchorAll;
+    styleFallbackUsed = true;
+  }
+
+  const anchorsWithMatches = anchorPool.filter(g => Array.isArray(g.matches) && g.matches.length > 0);
+  const chosenAnchorPool = anchorsWithMatches.length ? anchorsWithMatches : anchorPool;
+  const chosenAnchor = chosenAnchorPool[Math.floor(Math.random() * chosenAnchorPool.length)];
+
+  state.studioIndices[anchorCat] = anchorAll.findIndex(g => g.id === chosenAnchor.id);
   rebuildStudioLists();
+
+  const selectedSoFar = [chosenAnchor];
   for (const cat of CATEGORIES) {
     if (cat.key === anchorCat) continue;
-    const list = state.studioLists[cat.key] || [];
-    if (list.length > 1) {
-      const topPool = Math.min(2, list.length);
-      state.studioIndices[cat.key] = Math.floor(Math.random() * topPool);
+    const rankedList = state.studioLists[cat.key] || [];
+    if (!rankedList.length) continue;
+
+    let styleCandidates = rankedList.filter(entry => garmentHasStyle(entry.item, targetStyle));
+    if (!styleCandidates.length) {
+      styleCandidates = rankedList;
+      styleFallbackUsed = true;
+    }
+
+    const scoredCandidates = styleCandidates.map(entry => {
+      let multiMatchBonus = 0;
+      let harmonySum = 0;
+      for (const prev of selectedSoFar) {
+        if ((prev.matches || []).includes(entry.item.id)) {
+          multiMatchBonus += 12;
+        }
+        harmonySum += colorHarmonyScore(prev.colorHex, entry.item.colorHex);
+      }
+      return {
+        entry,
+        totalScore: multiMatchBonus + (harmonySum / selectedSoFar.length)
+      };
+    });
+
+    scoredCandidates.sort((a, b) => b.totalScore - a.totalScore);
+
+    const topK = Math.min(3, scoredCandidates.length);
+    const pickedEntry = scoredCandidates[Math.floor(Math.random() * topK)].entry;
+    selectedSoFar.push(pickedEntry.item);
+
+    const idxInStudio = rankedList.findIndex(e => e.item.id === pickedEntry.item.id);
+    if (idxInStudio !== -1) {
+      state.studioIndices[cat.key] = idxInStudio;
     }
   }
+
   renderStudio();
-  showToast('✨ Combinación sugerida');
+
+  const styleLabels = { any: 'combinado', casual: 'Casual', trabajo: 'Trabajo', elegante: 'Elegante' };
+  if (styleFallbackUsed && targetStyle !== 'any') {
+    showToast(`🎲 Look ${styleLabels[targetStyle]} generado (completado con básicos)`);
+  } else {
+    showToast(`🎲 ¡Sorpresa! Look ${styleLabels[targetStyle]} de 4 piezas listo`);
+  }
 });
 
 function slideSlot(catKey, delta) {
@@ -2035,6 +2609,9 @@ function renderStudio() {
             <img class="slide-img" src="${g.image}" alt="${escapeHtml(g.name)}" />
             <div class="slide-info">
               <div class="slide-title">${escapeHtml(g.name)}</div>
+              <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px;">
+                ${renderStyleBadgesHtml(g.styles)}
+              </div>
               <div class="slide-sub">
                 <span class="color-dot" style="background:${g.colorHex || '#64748b'}"></span>
                 ${escapeHtml(g.colorName || '')} • ${escapeHtml(g.age || '')}
@@ -2180,6 +2757,7 @@ document.getElementById('openSettingsBtn').addEventListener('click', () => {
   const s = getSettings();
   document.getElementById('geminiKeyInput').value = s.geminiKey;
   document.getElementById('geminiModelSelect').value = s.geminiModel;
+  document.getElementById('enableStudioPhotoCheckbox').checked = s.enableStudioPhoto;
   document.getElementById('firebaseConfigInput').value = s.firebaseConfigRaw;
   openModal('settingsModal');
 });
@@ -2187,6 +2765,7 @@ document.getElementById('openSettingsBtn').addEventListener('click', () => {
 document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
   localStorage.setItem('vestia_gemini_key', document.getElementById('geminiKeyInput').value.trim());
   localStorage.setItem('vestia_gemini_model', document.getElementById('geminiModelSelect').value);
+  localStorage.setItem('vestia_enable_studio_photo', document.getElementById('enableStudioPhotoCheckbox').checked ? 'true' : 'false');
   localStorage.setItem('vestia_firebase_config', document.getElementById('firebaseConfigInput').value.trim());
   closeModal('settingsModal');
   initFirebaseAuth();
@@ -2238,7 +2817,13 @@ document.getElementById('importJsonInput').addEventListener('change', async (e) 
 
   if (Array.isArray(parsed.garments)) {
     for (const g of parsed.garments) {
-      const item = { ...g, ownerId, storageKey: makeStorageKey(ownerId, g.id), updatedAt: Date.now() };
+      const item = {
+        ...g,
+        ownerId,
+        storageKey: makeStorageKey(ownerId, g.id),
+        styles: Array.isArray(g.styles) && g.styles.length ? g.styles : ['casual'],
+        updatedAt: Date.now()
+      };
       await idbPut('garments', item);
       await enqueueSync('garments', 'put', item.id, item);
     }
@@ -2266,6 +2851,7 @@ async function reloadLocalState() {
   const allOutfits = await idbGetAll('outfits');
   state.garments = allGarments
     .filter(g => g.ownerId === ownerId)
+    .map(g => ({ ...g, styles: Array.isArray(g.styles) && g.styles.length ? g.styles : ['casual'] }))
     .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
   state.outfits = allOutfits
     .filter(o => o.ownerId === ownerId)
