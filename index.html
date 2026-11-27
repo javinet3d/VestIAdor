@@ -254,6 +254,7 @@
     .btn-primary:hover { background: var(--primary-hover); }
     .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
     .btn-accent { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .btn-studio { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: #fff; }
     .btn-surprise { background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%); color: #fff; box-shadow: 0 3px 10px rgba(139, 92, 246, 0.28); }
     .btn-danger { background: #fee2e2; color: #b91c1c; }
     .btn-google {
@@ -266,6 +267,7 @@
     .btn-block { width: 100%; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
     input[type="text"], input[type="password"], textarea, select {
       width: 100%;
@@ -577,6 +579,18 @@
       object-fit: contain;
       cursor: zoom-in;
     }
+    .preview-mode-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(15, 23, 42, 0.78);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      backdrop-filter: blur(4px);
+    }
 
     .ai-status-banner {
       background: var(--primary-soft);
@@ -590,6 +604,20 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--surface-2);
+      padding: 10px 12px;
+      border-radius: 11px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
     }
 
     /* Modal / Drawer */
@@ -836,7 +864,7 @@
     <div id="wardrobeEmpty" class="card hidden" style="text-align:center;padding:32px 16px;">
       <div style="font-size:2.4rem;margin-bottom:8px;">👗</div>
       <div style="font-weight:700;margin-bottom:4px;">No hay prendas que coincidan</div>
-      <div style="color:var(--muted);font-size:0.86rem;margin-bottom:16px;">Añade tus prendas con foto; quitaremos el fondo automáticamente y podrás ajustarlo a tu gusto.</div>
+      <div style="color:var(--muted);font-size:0.86rem;margin-bottom:16px;">Añade tus prendas con foto; la IA quitará el fondo y mejorará la imagen como para tienda online.</div>
       <button class="btn btn-primary" onclick="switchTab('add')">+ Añadir prenda</button>
     </div>
 
@@ -855,12 +883,13 @@
 
       <div id="aiProgressBanner" class="ai-status-banner hidden">
         <span>⏳</span>
-        <span id="aiProgressText">Analizando con IA...</span>
+        <span id="aiProgressText">Procesando con IA...</span>
       </div>
 
       <div class="preview-box" id="previewBox">
+        <span id="previewModeTag" class="preview-mode-tag hidden">🪄 Foto Tienda IA</span>
         <span id="previewPlaceholder" style="color:var(--muted);font-size:0.88rem;text-align:center;padding:12px;">
-          Haz una foto o sube una imagen.<br/>Se recortará el fondo a blanco puro.
+          Haz una foto o sube una imagen.<br/>La IA quitará el fondo y mejorará la prenda como para tienda online (completa y sin doblar).
         </span>
         <img id="previewImg" class="hidden" alt="Vista previa prenda" onclick="openPreviewLightbox()" />
       </div>
@@ -877,13 +906,14 @@
       </div>
 
       <div id="bgToolsRow" class="hidden" style="margin-bottom:12px;">
-        <div style="margin-bottom:8px;">
+        <div class="grid-3" style="margin-bottom:8px;">
+          <button type="button" id="studioRetouchBtn" class="btn btn-studio btn-sm">🪄 Mejorar IA</button>
+          <button type="button" id="cyclePreviewBtn" class="btn btn-secondary btn-sm">👁️ Recorte Local</button>
+          <button type="button" id="reanalyzeAiBtn" class="btn btn-accent btn-sm">✨ Datos IA</button>
+        </div>
+        <div>
           <label for="bgTolerance">Ajuste manual recorte de fondo</label>
           <input type="range" id="bgTolerance" min="5" max="90" value="36" style="width:100%;" />
-        </div>
-        <div class="grid-2">
-          <button type="button" id="toggleOrigBtn" class="btn btn-secondary btn-sm">👁️ Ver original</button>
-          <button type="button" id="reanalyzeAiBtn" class="btn btn-accent btn-sm">✨ Analizar IA</button>
         </div>
       </div>
 
@@ -1041,13 +1071,13 @@
       <button class="btn btn-secondary btn-sm" onclick="closeModal('helpModal')">Cerrar</button>
     </div>
     <p style="font-size:0.86rem;color:var(--text);line-height:1.45;margin-top:0;">
-      Gestiona el inventario visual de tu ropa, elimina el fondo con ajuste manual o automático, clasifica cada prenda por estilos y genera combinaciones completas de 4 piezas.
+      Gestiona el inventario visual de tu ropa, mejora tus fotos con IA mostrando la prenda completa sin doblar sobre fondo blanco como en tienda online, y crea combinaciones de 4 piezas.
     </p>
     <div style="background:var(--surface-2);border-radius:12px;padding:12px;font-size:0.82rem;line-height:1.5;">
       <div style="font-weight:700;margin-bottom:6px;color:var(--primary);">📋 Instrucciones rápidas:</div>
       <ol style="margin:0;padding-left:18px;">
         <li><b>Cuenta Google y Nube:</b> Pulsa tu perfil arriba a la derecha para iniciar sesión con Google. La nube verde indica conexión activa y sincronización automática.</li>
-        <li><b>Recorte de fondo y estilos múltiples:</b> En <b>Añadir</b>, haz una foto, ajusta la tolerancia de fondo blanco si lo necesitas y asigna uno o varios estilos (<b>Casual</b>, <b>Trabajo</b>, <b>Elegante</b>).</li>
+        <li><b>Mejora IA y ajuste manual:</b> En <b>Añadir</b>, haz una foto. La IA quitará el fondo y mejorará la imagen mostrando la prenda completa sin doblar, y también dispones de un deslizador manual y vista previa alternable.</li>
         <li><b>Vista a pantalla completa con zoom:</b> Pulsa sobre la foto de cualquier prenda para abrirla a pantalla completa y hacer zoom con dos dedos o con los controles inferiores.</li>
         <li><b>Deshacer y ¡Sorpréndeme!:</b> Si eliminas o editas una prenda por error, pulsa <b>Deshacer</b>; en <b>Combinar</b>, pulsa <b>🎲 ¡Sorpréndeme!</b> para crear un look aleatorio de 4 piezas.</li>
       </ol>
@@ -1107,12 +1137,17 @@
     </div>
 
     <div style="margin-bottom:12px;">
-      <label for="geminiKeyInput">Gemini API Key (opcional — detección de categoría, color y estilos)</label>
+      <label for="geminiKeyInput">Gemini API Key (análisis y mejora de imagen con IA)</label>
       <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." />
     </div>
 
+    <div class="toggle-row">
+      <span>🪄 Quitar fondo y mejorar imagen (tienda online) con IA</span>
+      <input type="checkbox" id="enableStudioPhotoCheckbox" checked style="width:18px;height:18px;" />
+    </div>
+
     <div style="margin-bottom:14px;">
-      <label for="geminiModelSelect">Modelo de IA (Timeout 5s + 5 reintentos con fallback)</label>
+      <label for="geminiModelSelect">Modelo de IA datos (Timeout 5s + 5 reintentos con fallback)</label>
       <select id="geminiModelSelect">
         <option value="gemini-3.1-flash-lite" selected>Gemini 3.1 Flash-Lite (Por defecto • Ultra rápido)</option>
         <option value="gemini-3.8-flash">Gemini 3.8 Flash (Alta precisión multimodal)</option>
@@ -1274,6 +1309,12 @@ const AVAILABLE_GEMINI_MODELS = [
   'gemini-2.5-flash'
 ];
 
+const IMAGE_EDIT_MODELS = [
+  'gemini-2.5-flash-image',
+  'gemini-3.1-flash-image-preview',
+  'gemini-2.0-flash-exp-image-generation'
+];
+
 const state = {
   user: JSON.parse(localStorage.getItem('vestia_cached_user') || 'null'),
   garments: [],
@@ -1284,8 +1325,9 @@ const state = {
   studioIndices: { superior: 0, cinturon: 0, inferior: 0, calzado: 0 },
   studioLists: { superior: [], cinturon: [], inferior: [], calzado: [] },
   rawImageDataUrl: null,
-  processedImageDataUrl: null,
-  showingOriginal: false,
+  localCutoutDataUrl: null,
+  aiStudioDataUrl: null,
+  activePreviewMode: 'studio', // 'studio' | 'local' | 'original'
   undoSnapshot: null
 };
 
@@ -1323,9 +1365,11 @@ function parseFirebaseConfigInput(raw) {
 function getSettings() {
   const rawFb = localStorage.getItem('vestia_firebase_config') || '';
   const fbConfig = parseFirebaseConfigInput(rawFb) || DEFAULT_FIREBASE_CONFIG;
+  const studioPref = localStorage.getItem('vestia_enable_studio_photo');
   return {
     geminiKey: localStorage.getItem('vestia_gemini_key') || '',
     geminiModel: localStorage.getItem('vestia_gemini_model') || 'gemini-3.1-flash-lite',
+    enableStudioPhoto: studioPref === null ? true : studioPref === 'true',
     firebaseConfigRaw: rawFb || JSON.stringify(DEFAULT_FIREBASE_CONFIG, null, 2),
     firebaseConfig: fbConfig,
     firebaseUrl: fbConfig && fbConfig.databaseURL ? fbConfig.databaseURL.replace(/\/+$/, '') : ''
@@ -1397,10 +1441,13 @@ function openGarmentLightbox(garmentId) {
 }
 
 function openPreviewLightbox() {
-  const src = state.showingOriginal ? state.rawImageDataUrl : state.processedImageDataUrl;
+  const src = getActiveGarmentImageUrl();
   if (!src) return;
   const title = document.getElementById('garmentName').value.trim() || 'Vista previa de prenda';
-  openImageLightboxWithData(src, title, state.showingOriginal ? 'Imagen original' : 'Fondo recortado a blanco');
+  const modeSub = state.activePreviewMode === 'studio' && state.aiStudioDataUrl
+    ? 'Foto mejorada con IA'
+    : (state.activePreviewMode === 'original' ? 'Imagen original' : 'Recorte manual de fondo');
+  openImageLightboxWithData(src, title, modeSub);
 }
 
 function openImageLightboxWithData(imgSrc, title, subtitle = '') {
@@ -1418,13 +1465,11 @@ function closeImageLightbox() {
 (function setupLightboxGestures() {
   const stage = document.getElementById('lightboxStage');
 
-  // Wheel zoom on desktop
   stage.addEventListener('wheel', (e) => {
     e.preventDefault();
     adjustLightboxZoom(e.deltaY < 0 ? 0.35 : -0.35);
   }, { passive: false });
 
-  // Mouse drag when zoomed
   stage.addEventListener('mousedown', (e) => {
     if (lbState.scale <= 1) return;
     lbState.isDragging = true;
@@ -1441,7 +1486,6 @@ function closeImageLightbox() {
     lbState.isDragging = false;
   });
 
-  // Double-click zoom toggle
   stage.addEventListener('dblclick', () => {
     if (lbState.scale > 1) {
       resetLightboxZoom();
@@ -1451,7 +1495,6 @@ function closeImageLightbox() {
     }
   });
 
-  // Touch pinch-to-zoom, pan & double-tap
   stage.addEventListener('touchstart', (e) => {
     if (e.touches.length === 2) {
       const dx = e.touches[0].clientX - e.touches[1].clientX;
@@ -1851,7 +1894,7 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', updateSyncIndicator);
 
 /* ==========================================================================
-   6. IMAGE PROCESSING: MANUAL/AUTO BACKGROUND REMOVAL TO PURE WHITE
+   6. IMAGE PROCESSING: LOCAL CUTOUT + PURE WHITE NORMALIZATION
    ========================================================================== */
 function loadImageFromFile(file) {
   return new Promise((resolve, reject) => {
@@ -1865,6 +1908,44 @@ function loadImageFromFile(file) {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
+
+function loadImageFromDataUrl(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
+async function normalizeStudioPhotoToWhite(dataUrl) {
+  const img = await loadImageFromDataUrl(dataUrl);
+  const maxDim = 640;
+  let w = img.naturalWidth || img.width;
+  let h = img.naturalHeight || img.height;
+  if (w > maxDim || h > maxDim) {
+    const ratio = Math.min(maxDim / w, maxDim / h);
+    w = Math.round(w * ratio);
+    h = Math.round(h * ratio);
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(img, 0, 0, w, h);
+
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const d = imgData.data;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i] > 244 && d[i + 1] > 244 && d[i + 2] > 244) {
+      d[i] = 255; d[i + 1] = 255; d[i + 2] = 255;
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+  return canvas.toDataURL('image/jpeg', 0.86);
 }
 
 function removeBackgroundToWhite(img, tolerance = 36) {
@@ -1972,7 +2053,7 @@ function extractDominantColor(data) {
 }
 
 /* ==========================================================================
-   7. GEMINI AI: METADATA & STYLES EXTRACTION (5s TIMEOUT + 5 RETRIES)
+   7. GEMINI AI: STUDIO IMAGE ENHANCEMENT + METADATA & STYLES EXTRACTION
    ========================================================================== */
 function setAiProgress(visible, text = '') {
   const banner = document.getElementById('aiProgressBanner');
@@ -1995,6 +2076,57 @@ async function fetchWithTimeout(url, options, timeoutMs = 5000) {
   }
 }
 
+// 7A. AI Background removal & image enhancement using the exact prompt requested by the user
+async function generateStudioGarmentPhoto(rawBase64DataUrl) {
+  const { geminiKey } = getSettings();
+  if (!geminiKey || !navigator.onLine) return null;
+
+  const base64Clean = rawBase64DataUrl.split(',')[1];
+  const prompt = "quita el fondo y mejora la imagen de la prenda como para tienda online, mostrando la prenda completa sin doblar";
+
+  const requestBody = JSON.stringify({
+    contents: [{
+      parts: [
+        { text: prompt },
+        { inline_data: { mime_type: 'image/jpeg', data: base64Clean } }
+      ]
+    }],
+    generationConfig: {
+      responseModalities: ['IMAGE'],
+      temperature: 0.2
+    }
+  });
+
+  for (let i = 0; i < IMAGE_EDIT_MODELS.length; i++) {
+    const model = IMAGE_EDIT_MODELS[i];
+    setAiProgress(true, `🪄 Mejorando imagen para tienda online (${model})...`);
+    try {
+      const res = await fetchWithTimeout(
+        `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(geminiKey)}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: requestBody
+        },
+        18000
+      );
+      if (!res.ok) continue;
+      const json = await res.json();
+      const parts = json?.candidates?.[0]?.content?.parts || [];
+      const imgPart = parts.find(p => p.inline_data && p.inline_data.data) || parts.find(p => p.inlineData && p.inlineData.data);
+      if (imgPart) {
+        const inline = imgPart.inline_data || imgPart.inlineData;
+        const mime = inline.mime_type || inline.mimeType || 'image/png';
+        const rawOutUrl = `data:${mime};base64,${inline.data}`;
+        const normalizedUrl = await normalizeStudioPhotoToWhite(rawOutUrl);
+        return { studioDataUrl: normalizedUrl, usedModel: model };
+      }
+    } catch (e) {}
+  }
+  return null;
+}
+
+// 7B. Metadata & Styles extraction (5s timeout + 5 model fallback retries)
 async function analyzeGarmentWithGemini(base64DataUrl) {
   const { geminiKey, geminiModel } = getSettings();
   if (!geminiKey || !navigator.onLine) return null;
@@ -2051,12 +2183,10 @@ async function analyzeGarmentWithGemini(base64DataUrl) {
       const json = await res.json();
       const text = json?.candidates?.[0]?.content?.parts?.[0]?.text || '';
       const parsed = JSON.parse(text.replace(/```json|```/g, '').trim());
-      setAiProgress(false);
       return { data: parsed, usedModel: model };
     } catch (e) {}
   }
 
-  setAiProgress(false);
   return null;
 }
 
@@ -2184,18 +2314,40 @@ function renderWardrobe() {
 }
 
 /* ==========================================================================
-   9. ADD / EDIT GARMENT FORM HANDLERS (MANUAL BG REMOVAL + UNDO SNAPSHOT)
+   9. ADD / EDIT GARMENT FORM HANDLERS (AI STUDIO + MANUAL BG + UNDO)
    ========================================================================== */
+function getActiveGarmentImageUrl() {
+  if (state.activePreviewMode === 'studio' && state.aiStudioDataUrl) return state.aiStudioDataUrl;
+  if (state.activePreviewMode === 'original' && state.rawImageDataUrl) return state.rawImageDataUrl;
+  return state.localCutoutDataUrl || state.aiStudioDataUrl || state.rawImageDataUrl;
+}
+
 function updatePreviewDisplay() {
   const imgEl = document.getElementById('previewImg');
   const phEl = document.getElementById('previewPlaceholder');
-  const src = state.showingOriginal ? state.rawImageDataUrl : state.processedImageDataUrl;
+  const tagEl = document.getElementById('previewModeTag');
+  const cycleBtn = document.getElementById('cyclePreviewBtn');
+
+  const src = getActiveGarmentImageUrl();
   if (src) {
     imgEl.src = src;
     imgEl.classList.remove('hidden');
     phEl.classList.add('hidden');
+    tagEl.classList.remove('hidden');
+
+    if (state.activePreviewMode === 'studio' && state.aiStudioDataUrl) {
+      tagEl.textContent = '🪄 Foto Tienda IA';
+      cycleBtn.textContent = '👁️ Recorte Local';
+    } else if (state.activePreviewMode === 'local') {
+      tagEl.textContent = '✂️ Recorte Local';
+      cycleBtn.textContent = '👁️ Ver Original';
+    } else {
+      tagEl.textContent = '📷 Original';
+      cycleBtn.textContent = state.aiStudioDataUrl ? '👁️ Foto Tienda' : '👁️ Recorte Local';
+    }
   } else {
     imgEl.classList.add('hidden');
+    tagEl.classList.add('hidden');
     phEl.classList.remove('hidden');
   }
 }
@@ -2228,38 +2380,56 @@ function applyAiResultToForm(result) {
 
 async function handleImageSelected(file) {
   if (!file) return;
-  showToast('Recortando fondo a blanco...');
   const img = await loadImageFromFile(file);
 
   const c = document.createElement('canvas');
-  const ratio = Math.min(1, 640 / Math.max(img.width, img.height));
+  const ratio = Math.min(1, 768 / Math.max(img.width, img.height));
   c.width = Math.round(img.width * ratio);
   c.height = Math.round(img.height * ratio);
   c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-  state.rawImageDataUrl = c.toDataURL('image/jpeg', 0.88);
+  state.rawImageDataUrl = c.toDataURL('image/jpeg', 0.9);
   state._loadedImgElement = img;
 
   const tol = Number(document.getElementById('bgTolerance').value);
   const { whiteBgDataUrl, dominantHex } = removeBackgroundToWhite(img, tol);
-  state.processedImageDataUrl = whiteBgDataUrl;
-  state.showingOriginal = false;
-  document.getElementById('toggleOrigBtn').textContent = '👁️ Ver original';
+  state.localCutoutDataUrl = whiteBgDataUrl;
+  state.aiStudioDataUrl = null;
+  state.activePreviewMode = 'local';
 
   updatePreviewDisplay();
   document.getElementById('bgToolsRow').classList.remove('hidden');
   document.getElementById('garmentColorHex').value = dominantHex;
 
-  const { geminiKey } = getSettings();
+  const { geminiKey, enableStudioPhoto } = getSettings();
   if (geminiKey && navigator.onLine) {
-    const result = await analyzeGarmentWithGemini(whiteBgDataUrl);
-    if (result) {
-      applyAiResultToForm(result);
-      showToast(`✨ Datos detectados con ${result.usedModel}`);
+    const studioPromise = enableStudioPhoto
+      ? generateStudioGarmentPhoto(state.rawImageDataUrl)
+      : Promise.resolve(null);
+    const metaPromise = analyzeGarmentWithGemini(whiteBgDataUrl);
+
+    const [studioRes, metaRes] = await Promise.all([studioPromise, metaPromise]);
+    setAiProgress(false);
+
+    if (studioRes && studioRes.studioDataUrl) {
+      state.aiStudioDataUrl = studioRes.studioDataUrl;
+      state.activePreviewMode = 'studio';
+      updatePreviewDisplay();
+    }
+    if (metaRes) {
+      applyAiResultToForm(metaRes);
+    }
+
+    if (studioRes && metaRes) {
+      showToast('🪄 Imagen mejorada para tienda online y datos detectados');
+    } else if (studioRes) {
+      showToast('🪄 Imagen mejorada para tienda online sin fondo');
+    } else if (metaRes) {
+      showToast(`✨ Datos detectados con ${metaRes.usedModel}`);
     } else {
-      showToast('Fondo recortado (sin respuesta de IA)');
+      showToast('Recorte local aplicado (sin respuesta de IA)');
     }
   } else {
-    showToast('Fondo recortado a blanco; ajusta el deslizador si lo necesitas');
+    showToast('Fondo recortado a blanco en modo local');
   }
 }
 
@@ -2269,20 +2439,41 @@ document.getElementById('galleryInput').addEventListener('change', (e) => handle
 document.getElementById('bgTolerance').addEventListener('input', (e) => {
   if (!state._loadedImgElement) return;
   const { whiteBgDataUrl } = removeBackgroundToWhite(state._loadedImgElement, Number(e.target.value));
-  state.processedImageDataUrl = whiteBgDataUrl;
-  state.showingOriginal = false;
-  document.getElementById('toggleOrigBtn').textContent = '👁️ Ver original';
+  state.localCutoutDataUrl = whiteBgDataUrl;
+  state.activePreviewMode = 'local';
   updatePreviewDisplay();
 });
 
-document.getElementById('toggleOrigBtn').addEventListener('click', () => {
-  state.showingOriginal = !state.showingOriginal;
-  document.getElementById('toggleOrigBtn').textContent = state.showingOriginal ? '✂️ Ver fondo blanco' : '👁️ Ver original';
+document.getElementById('cyclePreviewBtn').addEventListener('click', () => {
+  const order = state.aiStudioDataUrl ? ['studio', 'local', 'original'] : ['local', 'original'];
+  const nextIdx = (order.indexOf(state.activePreviewMode) + 1) % order.length;
+  state.activePreviewMode = order[nextIdx];
   updatePreviewDisplay();
+});
+
+document.getElementById('studioRetouchBtn').addEventListener('click', async () => {
+  const sourceUrl = state.rawImageDataUrl || state.localCutoutDataUrl;
+  if (!sourceUrl) return;
+  const { geminiKey } = getSettings();
+  if (!geminiKey) {
+    openModal('settingsModal');
+    showToast('Configura tu API Key de Gemini primero');
+    return;
+  }
+  const studioRes = await generateStudioGarmentPhoto(sourceUrl);
+  setAiProgress(false);
+  if (studioRes && studioRes.studioDataUrl) {
+    state.aiStudioDataUrl = studioRes.studioDataUrl;
+    state.activePreviewMode = 'studio';
+    updatePreviewDisplay();
+    showToast('🪄 Imagen mejorada como para tienda online');
+  } else {
+    showToast('No se pudo generar la mejora con IA; usando recorte local');
+  }
 });
 
 document.getElementById('reanalyzeAiBtn').addEventListener('click', async () => {
-  const imgUrl = state.processedImageDataUrl || state.rawImageDataUrl;
+  const imgUrl = getActiveGarmentImageUrl();
   if (!imgUrl) return;
   const { geminiKey } = getSettings();
   if (!geminiKey) {
@@ -2291,6 +2482,7 @@ document.getElementById('reanalyzeAiBtn').addEventListener('click', async () => 
     return;
   }
   const result = await analyzeGarmentWithGemini(imgUrl);
+  setAiProgress(false);
   if (result) {
     applyAiResultToForm(result);
     showToast(`✨ Analizado con ${result.usedModel}`);
@@ -2308,7 +2500,7 @@ document.getElementById('saveGarmentBtn').addEventListener('click', async () => 
   const age = document.getElementById('garmentAge').value;
   const editId = document.getElementById('editGarmentId').value;
 
-  const finalImage = state.showingOriginal ? state.rawImageDataUrl : state.processedImageDataUrl;
+  const finalImage = getActiveGarmentImageUrl();
   if (!finalImage) {
     showToast('Añade primero una foto de la prenda');
     return;
@@ -2365,8 +2557,9 @@ function resetGarmentForm() {
   document.getElementById('bgToolsRow').classList.add('hidden');
   setAiProgress(false);
   state.rawImageDataUrl = null;
-  state.processedImageDataUrl = null;
-  state.showingOriginal = false;
+  state.localCutoutDataUrl = null;
+  state.aiStudioDataUrl = null;
+  state.activePreviewMode = 'studio';
   state._loadedImgElement = null;
   updatePreviewDisplay();
 }
@@ -2383,11 +2576,11 @@ function editGarment(id) {
   document.getElementById('garmentColorName').value = g.colorName || '';
   document.getElementById('garmentColorHex').value = g.colorHex || '#3b82f6';
   document.getElementById('garmentAge').value = g.age || '1-2 años';
-  state.processedImageDataUrl = g.image;
+  state.localCutoutDataUrl = g.image;
   state.rawImageDataUrl = g.image;
-  state.showingOriginal = false;
+  state.aiStudioDataUrl = null;
+  state.activePreviewMode = 'local';
 
-  // Prepare an Image element so manual tolerance slider also works on existing garments
   const img = new Image();
   img.onload = () => { state._loadedImgElement = img; };
   img.src = g.image;
@@ -2859,6 +3052,7 @@ document.getElementById('openSettingsBtn').addEventListener('click', () => {
   const s = getSettings();
   document.getElementById('geminiKeyInput').value = s.geminiKey;
   document.getElementById('geminiModelSelect').value = s.geminiModel;
+  document.getElementById('enableStudioPhotoCheckbox').checked = s.enableStudioPhoto;
   document.getElementById('firebaseConfigInput').value = s.firebaseConfigRaw;
   openModal('settingsModal');
 });
@@ -2866,6 +3060,7 @@ document.getElementById('openSettingsBtn').addEventListener('click', () => {
 document.getElementById('saveSettingsBtn').addEventListener('click', async () => {
   localStorage.setItem('vestia_gemini_key', document.getElementById('geminiKeyInput').value.trim());
   localStorage.setItem('vestia_gemini_model', document.getElementById('geminiModelSelect').value);
+  localStorage.setItem('vestia_enable_studio_photo', document.getElementById('enableStudioPhotoCheckbox').checked ? 'true' : 'false');
   localStorage.setItem('vestia_firebase_config', document.getElementById('firebaseConfigInput').value.trim());
   closeModal('settingsModal');
   initFirebaseAuth();
