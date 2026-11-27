@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#4f46e5" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>VestIA — Armario Inteligente</title>
+  <title>VestIAdor — Armario Inteligente</title>
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
@@ -778,12 +778,12 @@
 <body>
 
 <header>
-  <div class="brand" id="brandHelpTrigger" title="Pulsa para ver descripción e instrucciones de VestIA">
+  <div class="brand" id="brandHelpTrigger" title="Pulsa para ver descripción e instrucciones de VestIAdor">
     <div class="brand-badge">
-      <img src="./favicon.svg" alt="VestIA" />
+      <img src="./favicon.svg" alt="VestIAdor" />
     </div>
     <div class="brand-text-wrap">
-      <span class="brand-title">VestIA</span>
+      <span class="brand-title">Vest<span style="color:#f59e0b;">IA</span>dor</span>
       <span class="brand-sub">Armario Inteligente</span>
     </div>
   </div>
@@ -1035,8 +1035,8 @@
   <div class="modal-sheet">
     <div class="card-title">
       <span style="display:flex;align-items:center;gap:8px;">
-        <img src="./favicon.svg" alt="VestIA" style="width:26px;height:26px;border-radius:6px;" />
-        VestIA — Armario Inteligente
+        <img src="./favicon.svg" alt="VestIAdor" style="width:26px;height:26px;border-radius:6px;" />
+        VestIAdor — Armario Inteligente
       </span>
       <button class="btn btn-secondary btn-sm" onclick="closeModal('helpModal')">Cerrar</button>
     </div>
@@ -2904,7 +2904,7 @@ document.getElementById('exportJsonBtn').addEventListener('click', () => {
   }, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `vestia-backup-${new Date().toISOString().slice(0,10)}.json`;
+  a.download = `vestiador-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
 });
 

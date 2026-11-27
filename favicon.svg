@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <rect x="4" y="4" width="92" height="92" rx="22" fill="#4f46e5"/>
-  <path d="M44 27a6 6 0 1 1 10.5 4L50 35v5" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-  <path d="M50 40 L22 66 Q20 68 23 68 L77 68 Q80 68 78 66 Z" fill="none" stroke="#ffffff" stroke-width="5" stroke-linejoin="round"/>
-  <polygon points="72,22 74,27 79,29 74,31 72,36 70,31 65,29 70,27" fill="#fbbf24"/>
+  <path d="M44 23a6 6 0 1 1 10.5 4L50 31v4" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round"/>
+  <path d="M50 35 L23 59 Q21 61 24 61 L76 61 Q79 61 77 59 Z" fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linejoin="round"/>
+  <polygon points="72,19 74,24 79,26 74,28 72,33 70,28 65,26 70,24" fill="#fbbf24"/>
+  <text x="50" y="81" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="14" fill="#ffffff">Vest<tspan fill="#fbbf24">IA</tspan>dor</text>
 </svg>

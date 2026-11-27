@@ -1,6 +1,6 @@
 {
-  "name": "VestIA — Armario Inteligente",
-  "short_name": "VestIA",
+  "name": "VestIAdor — Armario Inteligente",
+  "short_name": "VestIAdor",
   "description": "Inventario inteligente de armario, recorte automático a fondo blanco y combinador de outfits offline.",
   "start_url": "./index.html",
   "scope": "./",
