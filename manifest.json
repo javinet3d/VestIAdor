@@ -1,7 +1,7 @@
 {
   "name": "VestIA — Armario Inteligente",
   "short_name": "VestIA",
-  "description": "Inventario inteligente de armario, recorte y mejora fotográfica con IA y combinador de outfits offline.",
+  "description": "Inventario inteligente de armario, recorte automático a fondo blanco y combinador de outfits offline.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
